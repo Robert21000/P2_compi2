@@ -1,1 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~codemirror/lib/codemirror.css';
+@import '~codemirror/theme/idea.css';
+@import '~codemirror/theme/material.css';
+@import '~codemirror/theme/cobalt.css';
+@import '~codemirror/theme/tomorrow-night-eighties.css';
+
+
+@import '~codemirror/addon/fold/foldgutter.css';
+@import '~codemirror/addon/lint/lint.css';
+
+body{
+    background: url('assets/fondo.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    }
+
+    .CodeMirror { width: 500px;
+  height: 500px; }

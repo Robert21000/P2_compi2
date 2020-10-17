@@ -1,0 +1,105 @@
+
+<app-nav-bar></app-nav-bar>
+<div id="grafica" style="text-align: center;">
+</div>
+
+<div style="color: white;">
+    <h3></h3>
+
+</div>
+
+<div class="container">
+<div class="row">
+    <div class="col-md-5" >
+        <ngx-codemirror
+        [(ngModel)]="content"
+         [options]="{
+           lineNumbers: true,
+           theme: 'cobalt',
+           mode: 'javascript'
+         }"
+       ></ngx-codemirror>
+       
+        <button  type  ="button" class="btn btn-success" (click)="Traducir()">Traducir</button>
+        <button  type  ="button" class="btn btn-danger" (click)="Graficar()">Graficar</button>   
+    </div>
+    <div class="col-md-1">
+    </div>
+    <div class="col-md-5">
+        <ngx-codemirror
+        [(ngModel)]="salida"
+         [options]="{
+           lineNumbers: true,
+           theme: 'tomorrow-night-eighties',
+           mode: 'javascript'
+         }"
+       ></ngx-codemirror>
+ 
+        <button  type  ="button" class="btn btn-primary"(click)="Ejecutar()">Ejecutar</button>
+        <button  type  ="button" class="btn btn-danger"(click)="Graficar2()">Graficar</button>
+        <button  type  ="button" class="btn btn-warning"(click)="TablaSimbolos()">Tabla de Simbolos</button>
+    </div>
+
+</div>
+
+</div>
+<div class="container">
+  <div class="row">
+    <h1 style="color: white;">Codigo 3D</h1>
+    <ngx-codemirror
+    [(ngModel)]="consola"
+     [options]="{
+       lineNumbers: true,
+       theme: 'tomorrow-night-eighties',
+       mode: 'javascript'
+     }"
+   ></ngx-codemirror>
+  </div>
+  </div>
+  <div class="container">
+    <h1 style="color: white;">Reporte de Errores</h1>
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">Tipo</th>
+          <th scope="col">Token no Esperado</th>
+          <th scope="col">Fila</th>
+          <th scope="col">Columna</th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr *ngFor="let item of lista" style="color: white;">
+          <td>{{item.tipo}}</td>
+          <td>{{item.valor}}</td>
+          <td>{{item.linea}}</td>
+          <td>{{item.columna}}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+
+<div class="container">
+  <h1 style="color: white;">Tabla de Simbolos</h1>
+  <table class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">Nombre</th>
+        <th scope="col">Tipo</th>
+        <th scope="col">Rol</th>
+      </tr>
+    </thead>
+    <tbody >
+      <tr *ngFor="let item of listatb" style="color: white;">
+        <td>{{item.nombre}}</td>
+        <td>{{item.tipo}}</td>
+        <td>{{item.rol}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="container">
+<div class="row">
+    <app-arbol></app-arbol>
+</div>
+</div>
