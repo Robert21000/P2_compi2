@@ -9,6 +9,12 @@ if (environment.production) {
 }
 
 import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/cobol/cobol.js';
+
+import 'codemirror/mode/pascal/pascal.js';
+
+import 'codemirror/mode/clike/clike.js';
+
 import 'codemirror/addon/fold/foldgutter';
 import 'codemirror/addon/fold/brace-fold';
 import 'codemirror/lib/codemirror';
