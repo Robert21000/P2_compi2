@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { parser } from "../../../assets/Gramatica/MatrioshTs";
 import { TraduccionService } from "../../Servicios/traduccion.service";
 import { EjecucionService } from "../../Servicios/ejecucion.service";
+
+import { Generar3DService } from "../../Servicios/generar3-d.service";
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -10,7 +12,7 @@ import { EjecucionService } from "../../Servicios/ejecucion.service";
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private servTr:TraduccionService,private servEj:EjecucionService) { }
+  constructor(private servTr:TraduccionService,private servEj:EjecucionService,private servGen:Generar3DService) { }
   consola:string="";
   content:string="";
   salida:string="";
@@ -55,9 +57,21 @@ export class HomeComponent implements OnInit {
     this.consola="";
     this.lista=[];
     this.listatb=[];
+    this.listasemanticos=[];
     this.servEj.Ejecucion(this.salida);
     this.listasemanticos=this.servEj.getSemanticos();
     this.lista=this.servEj.getErrores();
+
+    if(this.listasemanticos.length==0){
+      try {
+          this.ast = parser.parse(this.salida);
+          this.consola=this.servGen.generar3D(this.ast);
+      }catch (e) {
+            console.error(e);
+            return;
+        }
+
+    }
     
   }
   

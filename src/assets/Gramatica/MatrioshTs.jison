@@ -14,6 +14,16 @@ var idg=0;
 var linea=0;
 var columna=0;
 
+
+class Nodo{
+	constructor(cod,direc,tip){
+		this.codigo=cod;
+		this.direccion=direc;
+		this.tipo=tip;
+	}
+}
+
+
 %}
 
 %lex
@@ -172,11 +182,11 @@ ini: instrucciones EOF
 	{
 		var lista=[];
 		lista.push($1);
-
+		let n1=new Nodo();	
 		var ini={
 				nombre:"ini",
 				tipo:"noterminal",
-				nodo:"nodo"+idg,
+				nodo:"nodo"+idg,clase:n1,
 				linea:this._$.first_line,
 				columna:this._$.first_column,
 				hijos:lista
@@ -191,11 +201,11 @@ instrucciones:  instruccion instrucciones
 		var lista=[];
 		lista.push($1);
 		lista.push($2);
-	
+		let n2=new Nodo();	
 		var instrucciones={
 			nombre:"instrucciones",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n2,
 			return:"",
 			linea:this._$.first_line,
 			columna:this._$.first_column,
@@ -209,10 +219,11 @@ instrucciones:  instruccion instrucciones
 	{
 		var lista=[];
 		lista.push($1);
+		let n3=new Nodo();	
 		var instrucciones={
 			nombre:"instrucciones",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n3,
 			linea:this._$.first_line,
 			columna:this._$.first_column,
 			hijos:lista
@@ -234,12 +245,13 @@ instruccion:
 		DecLet
 			{
 			var lista=[];
+			let n4=new Nodo();	
 				lista.push($1);
 				idg++;
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n4,
 					linea:this._$.first_line,
 					columna:this._$.first_column,	
 					hijos:lista
@@ -250,12 +262,13 @@ instruccion:
 		|DecConst
 			{
 			var lista=[];
+			let n5=new Nodo();	
 				lista.push($1);
 				idg++;
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n5,
 					linea:this._$.first_line,
 					columna:this._$.first_column,	
 					hijos:lista
@@ -268,6 +281,7 @@ instruccion:
 
 			{
 				var lista=[];
+				let n6=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 
@@ -282,7 +296,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n6,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -293,6 +307,7 @@ instruccion:
 		|id cIzq Exp cDer igual Exp ptycoma
 			{							
 				var lista=[];
+				let n7=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 
@@ -311,7 +326,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n7,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -322,6 +337,7 @@ instruccion:
 		|Rfunction id pIzq Param pDer dosP Ntipo BloqueIns				//funciones
 			{
 				var lista=[];
+				let n8=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 
@@ -342,7 +358,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n8,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -354,6 +370,7 @@ instruccion:
 		|Rfunction id pIzq pDer dosP Ntipo BloqueIns					//funciones sin param
 			{
 				var lista=[];
+				let n9=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rfunction",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -372,7 +389,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n9,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -385,6 +402,7 @@ instruccion:
 		|Rreturn ptycoma												// return 
 			{
 				var lista=[];
+				let n10=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rreturn",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -394,7 +412,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n10,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -405,6 +423,7 @@ instruccion:
 		|Rreturn Exp ptycoma											//return exp
 			{
 				var lista=[];
+				let n11=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rreturn",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -415,7 +434,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n11,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -426,6 +445,7 @@ instruccion:
 		|Rbreak ptycoma													//break
 			{
 				var lista=[];
+				let n12=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				
@@ -435,7 +455,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n12,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -446,6 +466,7 @@ instruccion:
 		|Rcontinue ptycoma												//continue
 			{
 				var lista=[];
+				let n13=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rcontinue",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -455,7 +476,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n13,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -466,6 +487,7 @@ instruccion:
 		|Rif Condicion BloqueIns 										//if
 			{
 				var lista=[];
+				let n14=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rif",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -475,7 +497,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n14,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -486,6 +508,7 @@ instruccion:
 		|Rif Condicion BloqueIns NelseIf 								//if elseif
 			{
 				var lista=[];
+				let n15=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rif",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -496,7 +519,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n15,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -507,6 +530,7 @@ instruccion:
 		|Rif Condicion BloqueIns  Nelse 								//if else
 			{
 				var lista=[];
+				let n16=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rif",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -517,7 +541,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n16,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -529,6 +553,7 @@ instruccion:
 		|Rif Condicion BloqueIns NelseIf Nelse 							//if elseif else
 			{
 				var lista=[];
+				let n17=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rif",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -540,7 +565,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n17,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -552,6 +577,7 @@ instruccion:
 		|Rswitch pIzq Exp pDer llIzq Ncase Ndefault llDer				//switch
 			{
 				var lista=[];
+				let n18=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rswitch",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -570,7 +596,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n18,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -582,6 +608,7 @@ instruccion:
 		|Rwhile Condicion BloqueIns										//while
 			{
 				var lista=[];
+				let n19=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rwhile",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -591,7 +618,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n19,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -602,6 +629,7 @@ instruccion:
 		|Rdo BloqueIns Rwhile Condicion ptycoma							//do while
 			{
 				var lista=[];
+				let n20=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rdo",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -615,7 +643,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n20,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -627,6 +655,7 @@ instruccion:
 		|Rfor pIzq AsignaFor ptycoma Exp ptycoma insfor pDer BloqueIns	//for
 			{
 				var lista=[];
+				let n21=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rfor",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -646,7 +675,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n21,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -657,6 +686,7 @@ instruccion:
 		|Rfor pIzq Rlet id Rof id pDer BloqueIns						//for of
 			{
 				var lista=[];
+				let n22=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rfor",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -677,7 +707,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n22,
 					linea:linea,
 					columna:columna,	
 					hijos:lista
@@ -689,6 +719,7 @@ instruccion:
 		|Rfor pIzq Rlet id Rin id pDer BloqueIns						// for in
 			{
 				var lista=[];
+				let n23=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rfor",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -709,7 +740,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n23,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -721,6 +752,7 @@ instruccion:
 		|Rconsole punto Rlog pIzq Exp pDer ptycoma						//imprimir num
 			{
 				var lista=[];
+				let n24=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"Rconsole",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -739,7 +771,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n24,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -751,6 +783,7 @@ instruccion:
 		|Aumento	ptycoma												//id++
 			{
 				var lista=[];
+				let n25=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push($1);
@@ -759,7 +792,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n25,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -770,6 +803,7 @@ instruccion:
 		|Decremento ptycoma												//id--
 			{
 				var lista=[];
+				let n26=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push($1);
@@ -778,7 +812,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n26,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -789,6 +823,7 @@ instruccion:
 		|SumaIgual ptycoma												//id+=
 			{
 				var lista=[];
+				let n27=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push($1);
@@ -797,7 +832,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n27,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -808,6 +843,7 @@ instruccion:
 		|RestaIgual ptycoma												//id-=
 			{
 				var lista=[];
+				let n28=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push($1);
@@ -816,7 +852,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n28,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -827,6 +863,7 @@ instruccion:
 		|id pIzq pDer ptycoma											//llamada funcion sin param
 			{
 				var lista=[];
+				let n29=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -840,7 +877,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n29,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -851,6 +888,7 @@ instruccion:
 		|id pIzq Lparam pDer ptycoma									//llamada funcion con param
 			{
 				var lista=[];
+				let n30=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -866,7 +904,7 @@ instruccion:
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n30,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -883,6 +921,7 @@ BloqueIns:
 		llIzq instrucciones llDer
 			{
 				var lista=[];
+				let n31=new Nodo();	
 				linea=this._$.first_line;
 				columna=this._$.first_column;
 				lista.push({nombre:"llIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -893,7 +932,7 @@ BloqueIns:
 				var BloqueIns={
 					nombre:"BloqueIns",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n31,
 					linea:linea,
 					columna:columna,
 					hijos:lista
@@ -905,6 +944,7 @@ BloqueIns:
 		|llIzq llDer
 			{
 				var lista=[];
+				let n32=new Nodo();	
 				lista.push({nombre:"llIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$1});
 				idg++;
 				lista.push({nombre:"llDer",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
@@ -912,7 +952,7 @@ BloqueIns:
 				var BloqueIns={
 					nombre:"BloqueIns",
 					tipo:"noterminal",	
-					nodo:"nodo"+idg,
+					nodo:"nodo"+idg,clase:n32,
 					hijos:lista
 				}
 				idg++;
@@ -928,6 +968,7 @@ BloqueIns:
 AsignaFor: Rlet id dosP Ntipo igual Exp
 	{
 		var lista=[];
+		let n33=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rlet",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -944,7 +985,7 @@ AsignaFor: Rlet id dosP Ntipo igual Exp
 		var AsignaFor={
 			nombre:"AsignaFor",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n33,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -955,6 +996,7 @@ AsignaFor: Rlet id dosP Ntipo igual Exp
 	|id igual Exp
 	{
 		var lista=[];
+		let n34=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -966,7 +1008,7 @@ AsignaFor: Rlet id dosP Ntipo igual Exp
 		var AsignaFor={
 			nombre:"AsignaFor",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n34,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -980,6 +1022,7 @@ NelseIf:
 	NelseIf Relse Rif Condicion BloqueIns
 	{
 		var lista=[];
+		let n35=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -994,7 +1037,7 @@ NelseIf:
 		var NelseIf={
 			nombre:"NelseIf",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n35,
 			res:"",
 			linea:linea,
 			columna:columna,
@@ -1006,6 +1049,7 @@ NelseIf:
 	|Relse Rif Condicion BloqueIns
 	{
 		var lista=[];
+		let n36=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Relse",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1018,7 +1062,7 @@ NelseIf:
 		var NelseIf={
 			nombre:"NelseIf",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n36,
 			res:"",
 			linea:linea,
 			columna:columna,	
@@ -1034,6 +1078,7 @@ Condicion:
 	pIzq Exp pDer
 	{
 		var lista=[];
+		let n37=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1044,7 +1089,7 @@ Condicion:
 		var Condicion={
 			nombre:"Condicion",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n37,
 			res:"",
 			linea:linea,
 			columna:columna,
@@ -1059,6 +1104,7 @@ Nelse:
 	Relse BloqueIns
 	{
 		var lista=[];
+		let n38=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Relse",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1067,7 +1113,7 @@ Nelse:
 		var Nelse={
 			nombre:"Nelse",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n38,
 			res:"",
 			linea:linea,
 			columna:columna,	
@@ -1082,6 +1128,7 @@ Ncase:
 	Ncase Rcase Exp dosP instrucciones
 		{
 			var lista=[];
+			let n39=new Nodo();	
 			linea=this._$.first_line;
 			columna=this._$.first_column;
 			lista.push($1);
@@ -1094,7 +1141,7 @@ Ncase:
 			var Ncase={
 				nombre:"Ncase",
 				tipo:"noterminal",
-				nodo:"nodo"+idg,
+				nodo:"nodo"+idg,clase:n39,
 				valor:"",
 				exp:{valor:"",tipo:""},	
 				linea:linea,
@@ -1107,6 +1154,7 @@ Ncase:
 	|Rcase Exp dosP instrucciones
 		{
 			var lista=[];
+			let n40=new Nodo();	
 			linea=this._$.first_line;
 			columna=this._$.first_column;
 			lista.push({nombre:"Rcase",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1118,7 +1166,7 @@ Ncase:
 			var Ncase={
 				nombre:"Ncase",
 				tipo:"noterminal",	
-				nodo:"nodo"+idg,
+				nodo:"nodo"+idg,clase:n40,
 				exp:{valor:"",tipo:""},
 				linea:linea,
 				columna:columna,	
@@ -1133,6 +1181,7 @@ Ndefault:
 	Rdefault dosP instrucciones
 		{
 			var lista=[];
+			let n41=new Nodo();	
 			linea=this._$.first_line;
 			columna=this._$.first_column;
 			lista.push({nombre:"Rdefault",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1143,7 +1192,7 @@ Ndefault:
 			var Ndefault={
 				nombre:"Ndefault",
 				tipo:"noterminal",
-				nodo:"nodo"+idg,
+				nodo:"nodo"+idg,clase:n41,
 				linea:linea,
 				columna:columna,	
 				hijos:lista
@@ -1154,12 +1203,13 @@ Ndefault:
 	|
 	{
 		var lista=[];
+		let n42=new Nodo();	
 		lista.push({nombre:"Epsilon",tipo:"terminal",nodo:"nodo"+idg,valor:"epsilon"});
 		idg++;
 		var Ndefault={
 			nombre:"Ndefault",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n42,	
 			hijos:lista
 		}
 		idg++;
@@ -1173,6 +1223,7 @@ Aumento:
 	id mas mas
 	{
 		var lista=[];
+		let n43=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1184,7 +1235,7 @@ Aumento:
 		var Aumento={
 			nombre:"Aumento",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n43,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1197,6 +1248,7 @@ Aumento:
 Decremento: id menos menos
 	{
 		var lista=[];
+		let n44=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1208,7 +1260,7 @@ Decremento: id menos menos
 		var Decremento={
 			nombre:"Decremento",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n44,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1223,6 +1275,7 @@ Decremento: id menos menos
 SumaIgual: id mas igual Exp
 	{
 		var lista=[];
+		let n45=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1236,7 +1289,7 @@ SumaIgual: id mas igual Exp
 		var SumaIgual={
 			nombre:"SumaIgual",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n45,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1248,6 +1301,7 @@ SumaIgual: id mas igual Exp
 RestaIgual: id menos igual Exp
 	{
 		var lista=[];
+		let n46=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1260,7 +1314,7 @@ RestaIgual: id menos igual Exp
 		var RestaIgual={
 			nombre:"RestaIgual",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n46,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1273,11 +1327,12 @@ RestaIgual: id menos igual Exp
 insfor: Aumento
 	{
 		var lista=[];
+		let n47=new Nodo();	
 		lista.push($1);
 		var insfor={
 			nombre:"insfor",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n47,	
 			hijos:lista
 		}
 		idg++;
@@ -1286,11 +1341,12 @@ insfor: Aumento
 	|Decremento
 	{
 		var lista=[];
+		let n48=new Nodo();	
 		lista.push($1);
 		var insfor={
 			nombre:"insfor",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n48,	
 			hijos:lista
 		}
 		idg++;
@@ -1299,11 +1355,12 @@ insfor: Aumento
 	|SumaIgual
 	{
 		var lista=[];
+		let n49=new Nodo();	
 		lista.push($1);
 		var insfor={
 			nombre:"insfor",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n49,	
 			hijos:lista
 		}
 		idg++;
@@ -1312,11 +1369,12 @@ insfor: Aumento
 	|RestaIgual
 	{
 		var lista=[];
+		let n50=new Nodo();	
 		lista.push($1);
 		var insfor={
 			nombre:"insfor",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n50,	
 			hijos:lista
 		}
 		idg++;
@@ -1325,6 +1383,7 @@ insfor: Aumento
 	|id igual Exp
 	{
 		var lista=[];
+		let n51=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1335,7 +1394,7 @@ insfor: Aumento
 		var insfor={
 			nombre:"insfor",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n51,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1348,6 +1407,7 @@ Param:
 	Param coma id dosP Ntipo
 	{
 		var lista=[];
+		let n52=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -1362,7 +1422,7 @@ Param:
 		var Param={
 			nombre:"Param",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n52,
 			parametros:parametros,
 			linea:linea,
 			columna:columna,
@@ -1374,6 +1434,7 @@ Param:
 	|id dosP Ntipo
 	{
 		var lista=[];
+		let n53=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1385,7 +1446,7 @@ Param:
 		var Param={
 			nombre:"Param",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n53,
 			parametros:parametros,
 			linea:linea,
 			columna:columna,
@@ -1401,6 +1462,7 @@ DecLet:
 	Rlet Lasig ptycoma
 	{
 		var lista=[];
+		let n54=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rlet",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1412,7 +1474,7 @@ DecLet:
 		var DecLet={
 			nombre:"DecLet",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n54,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1425,6 +1487,7 @@ DecLet:
 Lasig: Lasig coma IA
 	{
 		var lista=[];
+		let n55=new Nodo();	
 		lista.push($1);
 		lista.push({nombre:"coma",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
 		idg++;
@@ -1432,7 +1495,7 @@ Lasig: Lasig coma IA
 		var Lasig={
 			nombre:"Lasig",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n55,
 			hijos:lista
 		}
 		idg++;
@@ -1441,11 +1504,12 @@ Lasig: Lasig coma IA
 	|IA
 	{
 		var lista=[];
+		let n56=new Nodo();	
 		lista.push($1);
 		var Lasig={
 			nombre:"Lasig",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n56,
 			hijos:lista
 		}
 		idg++;
@@ -1455,6 +1519,7 @@ Lasig: Lasig coma IA
 IA: id dosP Ntipo
 	{
 		var lista=[];
+		let n57=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1465,7 +1530,7 @@ IA: id dosP Ntipo
 		var IA={
 			nombre:"IA",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n57,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1477,6 +1542,7 @@ IA: id dosP Ntipo
 	|id dosP Ntipo igual Exp
 	{
 		var lista=[];
+		let n58=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1490,7 +1556,7 @@ IA: id dosP Ntipo
 		var IA={
 			nombre:"IA",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n58,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1504,6 +1570,7 @@ DecConst:
 	Rconst Lconst ptycoma
 	{
 		var lista=[];
+		let n59=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rconst",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1514,7 +1581,7 @@ DecConst:
 		var DecConst={
 			nombre:"DecConst",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n59,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1528,6 +1595,7 @@ Lconst:
 	Lconst coma CA
 	{
 		var lista=[];
+		let n60=new Nodo();	
 		lista.push($1);
 		lista.push({nombre:"coma",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
 		idg++;
@@ -1535,7 +1603,7 @@ Lconst:
 		var Lconst={
 			nombre:"Lconst",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n60,
 			hijos:lista
 		}
 		idg++;
@@ -1544,11 +1612,12 @@ Lconst:
 	|CA
 	{
 		var lista=[];
+		let n61=new Nodo();	
 		lista.push($1);
 		var Lconst={
 			nombre:"Lconst",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n61,
 			hijos:lista
 		}
 		idg++;
@@ -1559,6 +1628,7 @@ Lconst:
 CA: id dosP Ntipo igual Exp
 	{
 		var lista=[];
+		let n62=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1572,7 +1642,7 @@ CA: id dosP Ntipo igual Exp
 		var CA={
 			nombre:"CA",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n62,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1589,6 +1659,7 @@ Ntipo:
 	Rboolean
 	{
 		var lista=[];
+		let n63=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -1597,7 +1668,7 @@ Ntipo:
 		var Ntipo={
 			nombre:"Ntipo",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n63,
 			valor:"",
 			linea:linea,
 			columna:columna,
@@ -1609,6 +1680,7 @@ Ntipo:
     |Rstring
 	{
 		var lista=[];
+		let n64=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rstring",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1616,7 +1688,7 @@ Ntipo:
 		var Ntipo={
 			nombre:"Ntipo",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n64,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1627,6 +1699,7 @@ Ntipo:
     |Rnumber
 	{
 		var lista=[];
+		let n65=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rnumber",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1634,7 +1707,7 @@ Ntipo:
 		var Ntipo={
 			nombre:"Ntipo",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n65,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1645,6 +1718,7 @@ Ntipo:
     |Rvoid
 	{
 		var lista=[];
+		let n66=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -1653,7 +1727,7 @@ Ntipo:
 		var Ntipo={
 			nombre:"Ntipo",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n66,
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1664,6 +1738,7 @@ Ntipo:
     |Rboolean cIzq cDer
 	{
 		var lista=[];
+		let n67=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rboolean",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});		
@@ -1675,7 +1750,7 @@ Ntipo:
 		var Ntipo={
 			nombre:"Ntipo",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n67,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1686,6 +1761,7 @@ Ntipo:
 	|Rstring cIzq cDer
 	{
 		var lista=[];
+		let n68=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rstring",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});		
@@ -1697,7 +1773,7 @@ Ntipo:
 		var Ntipo={
 			nombre:"Ntipo",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n68,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1708,6 +1784,7 @@ Ntipo:
 	|Rnumber cIzq cDer
 	{
 		var lista=[];
+		let n69=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -1720,7 +1797,7 @@ Ntipo:
 		var Ntipo={
 			nombre:"Ntipo",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n69,
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1735,6 +1812,7 @@ LExp:
 	Exp coma LExp
 	{
 		var lista=[];
+		let n70=new Nodo();	
 		lista.push($1);
 		lista.push({nombre:"coma",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
 		idg++;
@@ -1743,7 +1821,7 @@ LExp:
 		var LExp={
 			nombre:"LExp",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n70,
 			pila:pila,
 			hijos:lista
 		}
@@ -1753,12 +1831,13 @@ LExp:
 	|Exp
 	{
 		var lista=[];
+		let n71=new Nodo();	
 		lista.push($1);		
 		var pila=[];
 		var LExp={
 			nombre:"LExp",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n71,
 			pila:pila,
 			hijos:lista
 		}
@@ -1767,13 +1846,14 @@ LExp:
 	}
 	|{
 		var lista=[];
+		let n72=new Nodo();	
 		lista.push({nombre:"Epsilon",tipo:"terminal",nodo:"nodo"+idg,valor:"epsilon"});
 		idg++;
 		var pila=[];
 		var LExp={
 			nombre:"LExp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n72,
 			pila:pila,	
 			hijos:lista
 		}
@@ -1790,6 +1870,7 @@ LExp:
 	Par: Par coma id dosP Exp
 	{
 		var lista=[];
+		let n73=new Nodo();	
 		lista.push($1);
 		lista.push({nombre:"coma",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
 		idg++;
@@ -1802,7 +1883,7 @@ LExp:
 		var Par={
 			nombre:"Par",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n73,	
 			hijos:lista
 		}
 		idg++;
@@ -1811,6 +1892,7 @@ LExp:
 	|id dosP Exp
 	{
 		var lista=[];
+		let n74=new Nodo();	
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1});
 		idg++;
 		lista.push({nombre:"dosP",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
@@ -1820,7 +1902,7 @@ LExp:
 		var Par={
 			nombre:"Par",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n74,	
 			hijos:lista
 		}
 		idg++;
@@ -1832,6 +1914,7 @@ LExp:
 	Lparam:	Lparam coma Exp
 	{
 		var lista=[];
+		let n75=new Nodo();	
 		lista.push($1);
 		lista.push({nombre:"coma",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
 		idg++;
@@ -1840,7 +1923,7 @@ LExp:
 		var Lparam={
 			nombre:"Lparam",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n75,
 			valores:valores,	
 			hijos:lista
 		}
@@ -1850,12 +1933,13 @@ LExp:
 	|Exp
 	{
 		var lista=[];
+		let n76=new Nodo();	
 		lista.push($1);
 		var valores=[];				
 		var Lparam={
 			nombre:"Lparam",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n76,
 			valores:valores,	
 			hijos:lista
 		}
@@ -1869,6 +1953,7 @@ Exp:
 	 menos Exp %prec UMENOS
 	 {
 		var lista=[];
+		let n77=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"menos",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1877,7 +1962,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n77,
 			hijos:lista
 		}
 		idg++;
@@ -1886,6 +1971,7 @@ Exp:
 	|neg Exp
 	{
 		var lista=[];
+		let n78=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -1895,7 +1981,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n78,
 			hijos:lista
 		}
 		idg++;
@@ -1904,6 +1990,7 @@ Exp:
 	|cIzq LExp cDer
 	{
 		var lista=[];
+		let n79=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"cIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -1914,7 +2001,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n79,	
 			hijos:lista
 		}
 		idg++;
@@ -1925,6 +2012,7 @@ Exp:
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		var lista=[];
+		let n80=new Nodo();	
 		lista.push($1);
 		lista.push({nombre:"difer",tipo:"terminal",nodo:"nodo"+idg,valor:$2,linea:linea,columna:columna});
 		idg++;
@@ -1932,7 +2020,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n80,	
 			hijos:lista
 		}
 		idg++;
@@ -1942,6 +2030,7 @@ Exp:
 	{
 
 		var lista=[];
+		let n81=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -1952,7 +2041,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n81,	
 			hijos:lista
 		}
 		idg++;
@@ -1961,6 +2050,7 @@ Exp:
 	|Exp mas Exp
 	{
 		var lista=[];
+		let n82=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -1970,7 +2060,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n82,
 			hijos:lista
 		}
 		idg++;
@@ -1979,6 +2069,7 @@ Exp:
 	|Exp menos Exp
 	{
 		var lista=[];
+		let n83=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -1988,7 +2079,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n83,	
 			hijos:lista
 		}
 		idg++;
@@ -1997,6 +2088,7 @@ Exp:
 	|Exp por Exp
 	{
 		var lista=[];
+		let n84=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2006,7 +2098,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n84,	
 			hijos:lista
 		}
 		idg++;
@@ -2015,6 +2107,7 @@ Exp:
 	|Exp div Exp
 	{
 		var lista=[];
+		let n85=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2024,7 +2117,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n85,	
 			hijos:lista
 		}
 		idg++;
@@ -2033,6 +2126,7 @@ Exp:
 	|Exp pot Exp
 	{
 		var lista=[];
+		let n86=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -2043,7 +2137,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n86,	
 			hijos:lista
 		}
 		idg++;
@@ -2052,6 +2146,7 @@ Exp:
 	|Exp mod Exp
 	{
 		var lista=[];
+		let n87=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2061,7 +2156,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n87,	
 			hijos:lista
 		}
 		idg++;
@@ -2070,6 +2165,7 @@ Exp:
 	|Exp menor Exp
 	{
 		var lista=[];
+		let n88=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2079,7 +2175,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n88,	
 			hijos:lista
 		}
 		idg++;
@@ -2088,6 +2184,7 @@ Exp:
 	|Exp mayor Exp
 	{
 		var lista=[];
+		let n89=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2097,7 +2194,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n89,	
 			hijos:lista
 		}
 		idg++;
@@ -2106,6 +2203,7 @@ Exp:
 	|Exp mayorq Exp
 	{
 		var lista=[];
+		let n90=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2115,7 +2213,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n90,	
 			hijos:lista
 		}
 		idg++;
@@ -2124,6 +2222,7 @@ Exp:
 	|Exp menorq Exp
 	{
 		var lista=[];
+		let n91=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2133,7 +2232,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n91,	
 			hijos:lista
 		}
 		idg++;
@@ -2142,6 +2241,7 @@ Exp:
 	|Exp or Exp
 	{
 		var lista=[];
+		let n92=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2151,7 +2251,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n92,	
 			hijos:lista
 		}
 		idg++;
@@ -2160,6 +2260,7 @@ Exp:
 	|Exp and Exp
 	{
 		var lista=[];
+		let n93=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2169,7 +2270,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n93,	
 			hijos:lista
 		}
 		idg++;
@@ -2178,14 +2279,15 @@ Exp:
 	|entero
 	{
 		var lista=[];
+		let n94=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
-		lista.push({nombre:"difer",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
+		lista.push({nombre:"number",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
 		idg++;		
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n94,
 			hijos:lista
 		}
 		idg++;
@@ -2194,6 +2296,7 @@ Exp:
 	|decimal
 	{
 		var lista=[];
+		let n95=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"decimal",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2201,7 +2304,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n95,	
 			hijos:lista
 		}
 		idg++;
@@ -2210,6 +2313,7 @@ Exp:
 	|Rfalse
 	{
 		var lista=[];
+		let n96=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rfalse",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2217,7 +2321,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n96,	
 			hijos:lista
 		}
 		idg++;
@@ -2226,6 +2330,7 @@ Exp:
 	|Rnull
 	{
 		var lista=[];
+		let n97=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rnull",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2233,7 +2338,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n97,	
 			hijos:lista
 		}
 		idg++;
@@ -2242,6 +2347,7 @@ Exp:
 	|Rtrue
 	{
 		var lista=[];
+		let n98=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"Rtrue",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2249,7 +2355,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n98,	
 			hijos:lista
 		}
 		idg++;
@@ -2258,6 +2364,7 @@ Exp:
 	|cadena
 	{
 		var lista=[];
+		let n99=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		if($1.includes("\\n")){
@@ -2274,7 +2381,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",	
-			nodo:"nodo"+idg,
+			nodo:"nodo"+idg,clase:n99,
 			hijos:lista
 		}
 		idg++;
@@ -2283,6 +2390,7 @@ Exp:
 	|cadenaSimple
 	{
 		var lista=[];
+		let n100=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		if($1.includes('\\n')){
@@ -2299,7 +2407,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n100,	
 			hijos:lista
 		}
 		idg++;
@@ -2308,6 +2416,7 @@ Exp:
 	|id
 	{
 		var lista=[];
+		let n101=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});		
@@ -2315,7 +2424,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n101,	
 			hijos:lista
 		}
 		idg++;
@@ -2324,6 +2433,7 @@ Exp:
 	|Exp ternario Exp dosP Exp
 	{
 		var lista=[];
+		let n102=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push($1);
@@ -2336,7 +2446,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n102,	
 			hijos:lista
 		}
 		idg++;
@@ -2345,6 +2455,7 @@ Exp:
 	|id pIzq pDer
 	{
 		var lista=[];
+		let n103=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -2357,7 +2468,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n103,	
 			hijos:lista
 		}
 		idg++;
@@ -2366,6 +2477,7 @@ Exp:
 	|id pIzq Lparam pDer
 	{
 		var lista=[];
+		let n104=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		
@@ -2379,7 +2491,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n104,	
 			hijos:lista
 		}
 		idg++;
@@ -2388,6 +2500,7 @@ Exp:
 	|llIzq Par llDer
 	{
 		var lista=[];
+		let n105=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"llIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2398,7 +2511,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n105,	
 			hijos:lista
 		}
 		idg++;
@@ -2407,6 +2520,7 @@ Exp:
 	|pIzq Exp pDer
 	{
 		var lista=[];
+		let n106=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2417,7 +2531,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n106,	
 			hijos:lista
 		}
 		idg++;
@@ -2426,6 +2540,7 @@ Exp:
 	|id cIzq Exp cDer
 	{
 		var lista=[];
+		let n107=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2438,7 +2553,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n107,	
 			hijos:lista
 		}
 		idg++;
@@ -2447,6 +2562,7 @@ Exp:
 	|id punto Rlength
 	{
 		var lista=[];
+		let n108=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
 		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
@@ -2458,7 +2574,7 @@ Exp:
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
-			nodo:"nodo"+idg,	
+			nodo:"nodo"+idg,clase:n108,	
 			hijos:lista
 		}
 		idg++;
