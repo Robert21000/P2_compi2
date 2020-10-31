@@ -1583,6 +1583,7 @@ case 65:
 			nombre:"Ntipo",
 			tipo:"noterminal",	
 			nodo:"nodo"+idg,clase:n64,
+			valor:"",
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1603,6 +1604,7 @@ case 66:
 			nombre:"Ntipo",
 			tipo:"noterminal",	
 			nodo:"nodo"+idg,clase:n65,
+			valor:"",
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1624,6 +1626,7 @@ case 67:
 			nombre:"Ntipo",
 			tipo:"noterminal",	
 			nodo:"nodo"+idg,clase:n66,
+			valor:"",
 			linea:linea,
 			columna:columna,
 			hijos:lista
@@ -1648,6 +1651,7 @@ case 68:
 			nombre:"Ntipo",
 			tipo:"noterminal",
 			nodo:"nodo"+idg,clase:n67,
+			valor:"",
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1672,6 +1676,7 @@ case 69:
 			nombre:"Ntipo",
 			tipo:"noterminal",
 			nodo:"nodo"+idg,clase:n68,
+			valor:"",
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -1697,6 +1702,7 @@ case 70:
 			nombre:"Ntipo",
 			tipo:"noterminal",
 			nodo:"nodo"+idg,clase:n69,
+			valor:"",
 			linea:linea,
 			columna:columna,	
 			hijos:lista
@@ -2763,10 +2769,14 @@ var columna=0;
 
 
 class Nodo{
-	constructor(cod,direc,tip){
+	constructor(cod,direc,tip,Lsig,Ltr,Lfal,cond){
 		this.codigo=cod;
 		this.direccion=direc;
 		this.tipo=tip;
+		this.Lsiguiente=Lsig;
+		this.Ltrue=Ltr;
+		this.Lfalse=Lfal;
+		this.condicion=cond;
 	}
 }
 
