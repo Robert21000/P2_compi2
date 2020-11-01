@@ -128,10 +128,7 @@ export class Generar3DService {
 
               }else if(Nodo.hijos[0].nombre=="Rif"){
                   if(Nodo.hijos.length==3){
-                    //console.log("paso if");
-                    let codigo="";    
-                    
-                        
+                        let codigo="";        
                         let L0=this.nuevaLabel();
                         let L1=this.nuevaLabel();
                         Nodo.hijos[1].clase.Ltrue=L0; 
@@ -143,6 +140,22 @@ export class Generar3DService {
                         codigo+=Nodo.hijos[1].clase.codigo+L0+":\n"+Nodo.hijos[2].clase.codigo+"\n"+L1+":\n";
                         Nodo.clase.codigo=codigo;
 
+                  }else if(Nodo.hijos.length==4){
+                        let codigo="";        
+                        let Ltrue=this.nuevaLabel();
+                        let Lfalse=this.nuevaLabel();
+                        Nodo.hijos[1].clase.Ltrue=Ltrue; 
+                        Nodo.hijos[1].clase.Lfalse=Lfalse;
+                        
+                        this.Recorre(Nodo.hijos[1],tbs,ptr);                      
+                        this.Recorre(Nodo.hijos[2],tbs,ptr);
+                        let codigo1=Nodo.hijos[1].clase.codigo;
+                        let codigo2=Nodo.hijos[2].clase.codigo;
+
+                        this.Recorre(Nodo.hijos[3],tbs,ptr);
+                        let codigo3=Nodo.hijos[3].clase.codigo;
+                        codigo+=codigo1+Ltrue+":\n"+codigo2+"\n"+Lfalse+":\n"+codigo3;
+                        Nodo.clase.codigo=codigo;
                   }
               }
 
@@ -671,6 +684,44 @@ export class Generar3DService {
                     }
                     
                   break;
+
+               case "NelseIf":
+                      if(Nodo.hijos.length==4){
+                        let codigo="";        
+                        let L0=this.nuevaLabel();
+                        let L1=this.nuevaLabel();
+                        Nodo.hijos[2].clase.Ltrue=L0; 
+                        Nodo.hijos[2].clase.Lfalse=L1;
+                        this.Recorre(Nodo.hijos[2],tbs,ptr);
+                      
+                        this.Recorre(Nodo.hijos[3],tbs,ptr);
+                        
+                        codigo+=Nodo.hijos[2].clase.codigo+L0+":\n"+Nodo.hijos[3].clase.codigo+"\n"+L1+":\n";
+                        Nodo.clase.codigo=codigo;
+                      }else if(Nodo.hijos.length==5){
+                        let codigo="";        
+                        let L0=this.nuevaLabel();
+                        let L1=this.nuevaLabel();
+                        Nodo.hijos[3].clase.Ltrue=L0; 
+                        Nodo.hijos[3].clase.Lfalse=L1;
+                        this.Recorre(Nodo.hijos[0],tbs,ptr);
+                        this.Recorre(Nodo.hijos[3],tbs,ptr);
+                        this.Recorre(Nodo.hijos[4],tbs,ptr);
+                          
+                        codigo+=Nodo.hijos[0].clase.codigo+Nodo.hijos[3].clase.codigo+L0+":\n"+Nodo.hijos[4].clase.codigo+"\n"+L1+":\n";
+                        Nodo.clase.codigo=codigo;
+
+                      }
+                 break;
+
+                 case "Nelse":
+                      if(Nodo.hijos.length==2){
+                          let codigo="";
+                          this.Recorre(Nodo.hijos[1],tbs,ptr);
+                          codigo+=Nodo.hijos[1].clase.codigo;
+                          Nodo.clase.codigo=codigo;
+                      }
+                   break;
 
         }
 
