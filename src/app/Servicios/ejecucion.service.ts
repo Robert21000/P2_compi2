@@ -591,7 +591,12 @@ getErrores(){
                 break;
               
                case "Ndefault":
-                      this.Visitar(Nodo.hijos[2],idFun,tipoFun,ciclo,tbs);
+                 if(Nodo.hijos.length==1){
+
+                 }else if(Nodo.hijos.length==3){
+                  this.Visitar(Nodo.hijos[2],idFun,tipoFun,ciclo,tbs);
+                 }
+                     
                  break; 
               case "AsignaFor":
                       if(Nodo.hijos.length==3){
