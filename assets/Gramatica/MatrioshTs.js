@@ -360,6 +360,7 @@ case 13:
 				lista.push({nombre:"Rbreak",tipo:"terminal",nodo:"nodo"+idg,valor:$$[$0-1],linea:linea,columna:columna});
 				idg++;
 				lista.push({nombre:"ptycoma",tipo:"terminal",nodo:"nodo"+idg,valor:$$[$0],linea:linea,columna:columna});
+				idg++;
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",

@@ -456,6 +456,7 @@ instruccion:
 				lista.push({nombre:"Rbreak",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
 				idg++;
 				lista.push({nombre:"ptycoma",tipo:"terminal",nodo:"nodo"+idg,valor:$2,linea:linea,columna:columna});
+				idg++;
 				var instruccion={
 					nombre:"instruccion",
 					tipo:"noterminal",
