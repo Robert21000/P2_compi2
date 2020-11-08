@@ -14,14 +14,18 @@ export class Generar3DService {
   contador:number=-1;
   contador2:number=-1;
 
+
+
+  tabla=[];
+  tbGlobal={tabla:this.tabla,padre:null,tamanio:0,actual:0};
   generar3D(Nodo):string{
     this.contador=-1;
     this.contador2=-1;
     this.generado="";
-    let tabla=[];
-    let tbGlobal={tabla:tabla,padre:null,tamanio:0,actual:0};
+
     let ptr=0;
-    this.Recorre(Nodo,tbGlobal,ptr,"","");
+    this.RecogerFunciones(Nodo);
+    this.Recorre(Nodo,this.tbGlobal,ptr,"","");
     this.encabezado="#include <stdio.h>\n";
     this.encabezado+="#include <math.h>\n";
     this.encabezado+="double ";
@@ -56,15 +60,24 @@ export class Generar3DService {
               break;
             case "instrucciones":
                 if(Nodo.hijos.length==1){
-                    
+                  let codigo="";
+                  if(Nodo.hijos[0].hijos[0].nombre!="Rfunction"){
                     Nodo.hijos[0].clase.Lfalse=Nodo.clase.Lfalse;
                     this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                    Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
+                    codigo+=Nodo.hijos[0].clase.codigo;
+                  }
+                    
+                  Nodo.clase.codigo=codigo;
                 }else if(Nodo.hijos.length==2){
-
+                   let codigo1="";
+                   let codigo2=""; 
+                  if(Nodo.hijos[0].hijos[0].nombre!="Rfunction"){
                     this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    codigo1+=Nodo.hijos[0].clase.codigo;
+                  }
                     this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
-                    Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[1].clase.codigo;
+                    codigo2+=Nodo.hijos[1].clase.codigo;
+                    Nodo.clase.codigo=codigo1+codigo2;
                 }
               break;
             case "instruccion":
@@ -127,8 +140,165 @@ export class Generar3DService {
                           codigo+="stack[(int)"+this.getDireccionId(id,tbs,ptr)+"]="+direccion1+";\n";
 
                           Nodo.clase.codigo=codigo1+codigo;
+                      }else if(Nodo.hijos[1].nombre=="pIzq"){
+                          let id=Nodo.hijos[0].valor.toLowerCase();
+                          
+                          this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+                          Nodo.clase.codigo=this.getNodofuncion(id).clase.codigo;
+                          
                       }
+                  }else if(Nodo.hijos.length==5){
+                    let id=Nodo.hijos[0].valor.toLowerCase();
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    console.log(Nodo.hijos[2].valores);
+                    console.log(Nodo.hijos[2].clase.codigo);
+
+                    this.getNodofuncion(id).clase.valores=Nodo.hijos[2].valores;
+                    this.getNodofuncion(id).clase.codigo=Nodo.hijos[2].clase.codigo;
+                    this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+                    Nodo.clase.codigo=this.getNodofuncion(id).clase.codigo;
+                    
+
                   }
+
+              }else if(Nodo.hijos[0].nombre=="Rfunction"){
+                    if(Nodo.hijos.length==7){
+                        this.Recorre(Nodo.hijos[5],tbs,ptr,lt,lf);
+                        let tipo=Nodo.hijos[5].valor;
+                      if(tipo.toLowerCase()=="void"){
+                        let tini=this.nuevaLabel();
+                        let final=this.nuevaLabel();
+                        let codigo="";
+                        let id=Nodo.hijos[1].valor;
+   
+                         //***************** */
+                         ptr=ptr+tbs.tamanio;
+                         let tabla=[];
+                         let tbsLocal={tabla:tabla,padre:this.tbGlobal,tamanio:0,actual:0}
+                         let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
+                         this.TamanioAmbito(Nodo.hijos[6],tbsLocal);
+                         /** */
+                        this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,final);
+                         /** */
+                         let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
+                         ptr=ptr-tbs.tamanio;
+                         /** */
+                        let codigo1=Nodo.hijos[6].clase.codigo;
+                        codigo+="\n\n"+tini+"_"+id+":\n"+codigo4+codigo1+codigo5+final+":\n\n";
+                        Nodo.clase.codigo=codigo;
+                      }else{
+                        let tini=this.nuevaLabel();
+                        let final=this.nuevaLabel();
+                        let codigo="";
+                        let id=Nodo.hijos[1].valor;
+   
+                         //***************** */
+                         ptr=ptr+tbs.tamanio;
+                         let tabla=[];
+                         let tbsLocal={tabla:tabla,padre:this.tbGlobal,tamanio:0,actual:0}
+                         let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
+                         this.TamanioAmbito(Nodo.hijos[6],tbsLocal);
+                         /** */
+                        this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,final);
+                         /** */
+                         let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
+                         ptr=ptr-tbs.tamanio;
+                         /** */
+                        let codigo1=Nodo.hijos[6].clase.codigo;
+                        let temp1=this.nuevoTemp();
+                        let temp2=this.nuevoTemp();
+                       // console.log(tbsLocal.tamanio);
+                        codigo1+=temp1+"=ptr+"+(tbsLocal.tamanio-1)+";\n";  
+                        codigo1+=temp2+"=stack[(int)"+temp1+"];\n";
+                        codigo+="\n\n"+tini+"_"+id+":\n"+codigo4+codigo1+codigo5+final+":\n\n";
+                        Nodo.clase.codigo=codigo;
+                        Nodo.clase.direccion=temp2;
+
+                      }
+                     
+                    }else if(Nodo.hijos.length==8){
+                      this.Recorre(Nodo.hijos[6],tbs,ptr,lt,lf);
+                      let tipo=Nodo.hijos[6].valor;
+                          if(tipo.toLowerCase()=="void"){
+                            let tini=this.nuevaLabel();
+                            let final=this.nuevaLabel();
+                            let codigo="";
+                            let codigoExp=Nodo.clase.codigo;
+                            let id=Nodo.hijos[1].valor;
+      
+                            //***************** */
+                            codigo+="\n\n"+tini+"_"+id+":\n";
+                            ptr=ptr+tbs.tamanio;
+                            let tabla=[];
+                            let tbsLocal={tabla:tabla,padre:this.tbGlobal,tamanio:0,actual:0}
+                            let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
+                            this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
+                            let codParam=Nodo.hijos[3].clase.codigo;
+                            codigo+=codigo4+codParam+codigoExp;
+                            console.log(Nodo.clase.valores);
+                            for(let i=0;i<Nodo.clase.valores.length;i++){
+                                let t1= this.nuevoTemp();
+                                codigo+=t1+"=ptr+"+i+";\n";
+                                codigo+="stack[(int)"+t1+"]="+Nodo.clase.valores[i]+";\n";
+                            }
+
+                            this.TamanioAmbito(Nodo.hijos[7],tbsLocal);
+                            tbsLocal.tamanio+=this.NumParametros(Nodo.hijos[3]);
+                            /** */
+                            this.Recorre(Nodo.hijos[7],tbsLocal,ptr,lt,final);
+                            /** */
+                            let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
+                            ptr=ptr-tbs.tamanio;
+                            /** */
+                            let codigo1=Nodo.hijos[7].clase.codigo;
+                            codigo+=codigo1+codigo5+final+":\n\n";
+                            Nodo.clase.codigo=codigo;
+
+                          }else{
+
+                            let tini=this.nuevaLabel();
+                            let final=this.nuevaLabel();
+                            let codigo="";
+                            let codigoExp=Nodo.clase.codigo;
+                            let id=Nodo.hijos[1].valor;
+      
+                            //***************** */
+                            codigo+="\n\n"+tini+"_"+id+":\n";
+                            ptr=ptr+tbs.tamanio;
+                            let tabla=[];
+                            let tbsLocal={tabla:tabla,padre:this.tbGlobal,tamanio:0,actual:0}
+                            let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
+                            this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
+                            let codParam=Nodo.hijos[3].clase.codigo;
+                            codigo+=codigo4+codParam+codigoExp;
+                            console.log(Nodo.clase.valores);
+                            for(let i=0;i<Nodo.clase.valores.length;i++){
+                                let t1= this.nuevoTemp();
+                                codigo+=t1+"=ptr+"+i+";\n";
+                                codigo+="stack[(int)"+t1+"]="+Nodo.clase.valores[i]+";\n";
+                            }
+
+                            this.TamanioAmbito(Nodo.hijos[7],tbsLocal);
+                            tbsLocal.tamanio+=this.NumParametros(Nodo.hijos[3]);
+                            /** */
+                            this.Recorre(Nodo.hijos[7],tbsLocal,ptr,lt,final);
+                            /** */
+                            let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
+                            ptr=ptr-tbs.tamanio;
+                            /** */
+                            let codigo1=Nodo.hijos[7].clase.codigo;
+                            let temp1=this.nuevoTemp();
+                            
+                            let temp2=this.nuevoTemp();
+                       // console.log(tbsLocal.tamanio);
+                            codigo1+=temp1+"=ptr+"+(tbsLocal.tamanio-1)+";\n";  
+                            codigo1+=temp2+"=stack[(int)"+temp1+"];\n";
+                            codigo+=codigo1+codigo5+final+":\n\n";
+                            Nodo.clase.codigo=codigo;
+                            Nodo.clase.direccion=temp2;
+
+                          }
+                    }
 
               }else if(Nodo.hijos[0].nombre=="Rif"){
                   if(Nodo.hijos.length==3){
@@ -144,12 +314,10 @@ export class Generar3DService {
                         let tbsLocal={tabla:tabla,padre:tbs,tamanio:0,actual:0}
                         let codigo1="ptr=ptr+"+tbs.tamanio+";\n";
                         this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
-                        console.log(tbsLocal.tamanio);
                         /** */
                         this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
                         /** */
                         let codigo2="ptr=ptr-"+tbs.tamanio+";\n";
-
                         ptr=ptr-tbs.tamanio;
                         /** */
                         
@@ -164,26 +332,71 @@ export class Generar3DService {
                         Nodo.hijos[1].clase.Ltrue=Ltrue; 
                         Nodo.hijos[1].clase.Lfalse=Lfalse;
                         
-                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);                      
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
-                        let codigo1=Nodo.hijos[1].clase.codigo;
-                        let codigo2=Nodo.hijos[2].clase.codigo;
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+
+
                         /** */
                         ptr=ptr+tbs.tamanio;
                         let tabla=[];
                         let tbsLocal={tabla:tabla,padre:tbs,tamanio:0,actual:0}
                         let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
-                        this.TamanioAmbito(Nodo.hijos[3],tbsLocal);
+                        this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
                         /** */
-                        this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
-                        let codigo3=Nodo.hijos[3].clase.codigo;
-                        //** */
-                        let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
 
+                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
+                        
+                        /** */
+                        let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
+                        ptr=ptr-tbs.tamanio;
+                        /** */  
+
+                        let codigo1=Nodo.hijos[1].clase.codigo;
+                        let codigo2=Nodo.hijos[2].clase.codigo;
+                        
+                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
+                        let codigo3=Nodo.hijos[3].clase.codigo;
+                        
+
+                        codigo+=codigo1+Ltrue+":\n"+codigo4+codigo2+codigo5+"\n goto "+Lsalida+";\n"+Lfalse+":\n"+codigo3+"\n"+Lsalida+":\n";
+                        Nodo.clase.codigo=codigo;
+                  }else if(Nodo.hijos.length==5){
+                        
+                        let codigo="";        
+                        let Ltrue=this.nuevaLabel();
+                        let Lfalse=this.nuevaLabel();
+                        let Lfalse2=this.nuevaLabel();
+                        let Lsalida=this.nuevaLabel();
+                        Nodo.hijos[1].clase.Ltrue=Ltrue; 
+                        Nodo.hijos[1].clase.Lfalse=Lfalse;
+                        
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                        /** */
+                        ptr=ptr+tbs.tamanio;
+                        let tabla=[];
+                        let tbsLocal={tabla:tabla,padre:tbs,tamanio:0,actual:0}
+                        let codigo5="ptr=ptr+"+tbs.tamanio+";\n";
+                        this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
+                        /** */                        
+                        
+                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
+
+                        //** */
+                        let codigo6="ptr=ptr-"+tbs.tamanio+";\n";
                         ptr=ptr-tbs.tamanio;
                         /** */
-                        codigo+=codigo1+Ltrue+":\n"+codigo2+"\n goto "+Lsalida+";\n"+Lfalse+":\n"+codigo4+codigo3+codigo5+"\n"+Lsalida+":\n";
+                        
+                        let codigo1=Nodo.hijos[1].clase.codigo;
+                        let codigo2=Nodo.hijos[2].clase.codigo;
+                        
+                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
+                        let codigo3=Nodo.hijos[3].clase.codigo;
+
+                        this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                        let codigo4=Nodo.hijos[4].clase.codigo;
+                        
+                        codigo+=codigo1+Ltrue+":\n"+codigo5+codigo2+codigo6+"\n goto "+Lsalida+";\n"+Lfalse+":\n"+codigo3+"goto "+Lsalida+";\n"+Lfalse2+":\n"+codigo4+" goto "+Lsalida+";\n"+Lsalida+":\n";
                         Nodo.clase.codigo=codigo;
+
                   }
               }else if(Nodo.hijos[0].nombre=="Rwhile"){
                     let codigo="";        
@@ -261,6 +474,28 @@ export class Generar3DService {
               }else if(Nodo.hijos[0].nombre=="Decremento"){
                 this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
                 Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
+              }else if(Nodo.hijos[0].nombre=="Rreturn"){
+                if(Nodo.hijos.length==2){
+
+                    Nodo.clase.codigo="goto "+lf+";\n";
+                }else if(Nodo.hijos.length==3){
+                  
+                  let codigo="";
+                  this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                  let tipo=Nodo.hijos[1].clase.tipo;
+                  let codigo1=Nodo.hijos[1].clase.codigo;
+                  let direccion1=Nodo.hijos[1].clase.direccion;
+                  let t1=this.nuevoTemp();
+                  codigo+=t1+"=ptr+"+tbs.actual+";\n";
+                  codigo+="stack[(int)"+t1+"]="+direccion1+";\n";                          
+                  this.declararSinExp("return",tipo,"let",tbs);
+                  tbs.actual+=1;
+                  Nodo.clase.codigo=codigo1+codigo;
+                  console.log("return");
+                  console.log(Nodo.clase.codigo);
+                }
+                
+
               }
 
               break;
@@ -662,10 +897,34 @@ export class Generar3DService {
 
 
 
-                  }
+                  }else if(Nodo.hijos[1].nombre=="pIzq"){
+                      
+                      let id=Nodo.hijos[0].valor.toLowerCase();
+                      this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+                      //console.log(this.getNodofuncion(id).clase.codigo);
+                      //console.log(this.getNodofuncion(id).clase.direccion); 
+                      //console.log(this.getNodofuncion(id).tipo);  
+                      Nodo.clase.codigo=this.getNodofuncion(id).clase.codigo;
+                      Nodo.clase.direccion=this.getNodofuncion(id).clase.direccion;
+                      Nodo.clase.tipo=this.getTipofuncion(id);
+                  
+                    }
 
               }else if(Nodo.hijos.length==4){
+                    let id=Nodo.hijos[0].valor.toLowerCase();
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
 
+                    this.getNodofuncion(id).clase.valores=Nodo.hijos[2].valores;
+                    this.getNodofuncion(id).clase.codigo=Nodo.hijos[2].clase.codigo;
+                    this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+
+                    console.log(this.getNodofuncion(id).clase.codigo);
+                    console.log(this.getNodofuncion(id).clase.direccion);
+                    console.log(this.getTipofuncion(id));
+                    Nodo.clase.codigo=this.getNodofuncion(id).clase.codigo;
+                    
+                    Nodo.clase.direccion=this.getNodofuncion(id).clase.direccion;
+                    Nodo.clase.tipo=this.getTipofuncion(id);
               }
               break;
 
@@ -870,7 +1129,7 @@ export class Generar3DService {
                           let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
                           this.TamanioAmbito(Nodo.hijos[3],tbsLocal);
                           /** */
-                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
                         /** */
                         let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
 
@@ -896,7 +1155,7 @@ export class Generar3DService {
                         this.TamanioAmbito(Nodo.hijos[4],tbsLocal);
                         /** */
                         
-                        this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[4],tbsLocal,ptr,lt,lf);
                         
                         /** */
                         let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
@@ -920,7 +1179,7 @@ export class Generar3DService {
                           let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
                           this.TamanioAmbito(Nodo.hijos[1],tbsLocal);
                           /** */
-                          this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[1],tbsLocal,ptr,lt,lf);
                           /** */
                           let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
                           ptr=ptr-tbs.tamanio;
@@ -1010,7 +1269,103 @@ export class Generar3DService {
                       codigo+="stack["+dir+"]="+t1+";\n";
                       Nodo.clase.codigo=codigo;
                     }
-                    break;    
+                    break;
+                  case "Param":
+                        if(Nodo.hijos.length==3){
+                            this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                            let id=Nodo.hijos[0].valor;
+                            let tipo=Nodo.hijos[2].valor;
+                            let codigo="";
+                            if(tipo=="number"){
+                              let t1=this.nuevoTemp();
+                              codigo+=t1+"=ptr+"+tbs.actual+";\n";
+                              codigo+="stack[(int)"+t1+"]=0;\n";                          
+                              this.declararSinExp(id,tipo,"let",tbs);
+                              tbs.actual+=1;
+                              Nodo.clase.codigo=codigo;  
+                            }else if(tipo=="boolean"){
+                              let temp1=this.nuevoTemp();  
+                              let codigo1=this.getCodigoCadena(temp1,"false");
+                              let t1=this.nuevoTemp();
+                              codigo+=t1+"=ptr+"+tbs.actual+";\n";
+                              codigo+="stack[(int)"+t1+"]="+temp1+";\n";                          
+                              this.declararSinExp(id,tipo,"let",tbs);
+                              tbs.actual+=1;
+                              Nodo.clase.codigo=codigo1+codigo;
+                            }else if(tipo=="string"){
+                              let temp1=this.nuevoTemp();
+                              codigo+=temp1+"=h;\n";
+                              codigo+="heap[(int)h]=0;\n";
+                              codigo+="h=h+1;\n";
+                              codigo+="heap[(int)h]=-1;\n";
+                              codigo+="h=h+1;\n";
+                              let t1=this.nuevoTemp();
+                              codigo+=t1+"=ptr+"+tbs.actual+";\n";
+                              codigo+="stack[(int)"+t1+"]="+temp1+";\n";                          
+                              this.declararSinExp(id,tipo,"let",tbs);
+                              tbs.actual+=1;
+                              Nodo.clase.codigo=codigo;
+
+                            }
+                        }else if(Nodo.hijos.length==5){
+
+                          this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                          let id=Nodo.hijos[2].valor;
+                          let tipo=Nodo.hijos[4].valor;
+                          let codigo="";
+                          if(tipo=="number"){
+                            let t1=this.nuevoTemp();
+                            codigo+=t1+"=ptr+"+tbs.actual+";\n";
+                            codigo+="stack[(int)"+t1+"]=0;\n";                          
+                            this.declararSinExp(id,tipo,"let",tbs);
+                            tbs.actual+=1;
+                            Nodo.clase.codigo=codigo;  
+                          }else if(tipo=="boolean"){
+                            let temp1=this.nuevoTemp();  
+                            let codigo1=this.getCodigoCadena(temp1,"false");
+                            let t1=this.nuevoTemp();
+                            codigo+=t1+"=ptr+"+tbs.actual+";\n";
+                            codigo+="stack[(int)"+t1+"]="+temp1+";\n";                          
+                            this.declararSinExp(id,tipo,"let",tbs);
+                            tbs.actual+=1;
+                            Nodo.clase.codigo=codigo1+codigo;
+                          }else if(tipo=="string"){
+                            let temp1=this.nuevoTemp();
+                            codigo+=temp1+"=h;\n";
+                            codigo+="heap[(int)h]=0;\n";
+                            codigo+="h=h+1;\n";
+                            codigo+="heap[(int)h]=-1;\n";
+                            codigo+="h=h+1;\n";
+                            let t1=this.nuevoTemp();
+                            codigo+=t1+"=ptr+"+tbs.actual+";\n";
+                            codigo+="stack[(int)"+t1+"]="+temp1+";\n";                          
+                            this.declararSinExp(id,tipo,"let",tbs);
+                            tbs.actual+=1;
+                            Nodo.clase.codigo=codigo;
+
+                          }
+                        }
+                    break; 
+                    
+                  case "Lparam":
+                        if(Nodo.hijos.length==1){
+                            this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                            Nodo.valores=[];
+                            Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
+                            Nodo.valores.push(Nodo.hijos[0].clase.direccion);
+                        }else if(Nodo.hijos.length==3){
+                              Nodo.valores=[];
+                              this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                              let codigo1=Nodo.hijos[0].clase.codigo;
+                              for(let item of Nodo.hijos[0].valores){
+                                    Nodo.valores.push(item);
+                              }
+                              this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                              Nodo.valores.push(Nodo.hijos[2].clase.direccion);
+                              Nodo.clase.codigo=codigo1+Nodo.hijos[2].clase.codigo;  
+                        }
+                    break;  
 
         }
 
@@ -1102,9 +1457,9 @@ export class Generar3DService {
                   
                   this.TamanioAmbito(Nodo.hijos[0],tbs);
                 }else if(Nodo.hijos[0].nombre=="Rreturn"){
-                    if(Nodo.hijos.length==1){
+                    if(Nodo.hijos.length==2){
 
-                    }else if(Nodo.hijos.length==2){
+                    }else if(Nodo.hijos.length==3){
                         tbs.tamanio=tbs.tamanio+1;
                     }
                 }
@@ -1325,7 +1680,7 @@ getCodigoNumero(tmpReturn,tmpIni):string{
   codigo+=dato+"="+t4+";\n";
   codigo+="if((int)"+t4+"!=0) goto "+L0+";\n";
   codigo+=L4+":\n";
-  codigo+="heap[(int)h]="+t5+"+'0';\n";
+  codigo+="heap[(int)h]="+t5+"+48;\n";
   codigo+="h=h+1;\n";
   codigo+="goto "+L2+";\n";
   codigo+=L5+":\n";
@@ -1358,7 +1713,7 @@ getCodigoNumero(tmpReturn,tmpIni):string{
   codigo+=dato1+"="+t4+";\n";
   codigo+="if((int)"+t4+"!=0) goto "+L10+";\n";
   codigo+=L14+":\n";
-  codigo+="heap[(int)h]="+t5+"+'0';\n";
+  codigo+="heap[(int)h]="+t5+"+48;\n";
   codigo+="h=h+1;\n";
   codigo+="goto "+L12+";\n";
   codigo+=L15+":\n";
@@ -1375,7 +1730,115 @@ declararSinExp(id,tipo,rol,tbs){
     tbs.tabla.push({nombre:id,tipo:tipo,rol:rol,direccion:tbs.actual});
 }
 
+getNodofuncion(id){
+  let Nodo=null;
+  
+  for(let item of this.tbGlobal.tabla){
+      if(item.nombre.toLowerCase()==id){
+          Nodo=item.nodo;
+          break;        
+      }
 
+  }
+  return Nodo;
+}
+
+
+getTipofuncion(id){
+  let tipo="";
+  
+  for(let item of this.tbGlobal.tabla){
+      if(item.nombre.toLowerCase()==id){
+          tipo=item.tipo;
+          break;        
+      }
+
+  }
+  return tipo;
+}
+
+NumParametros(Nodo){
+  if(Nodo.hijos.length==3){
+
+    return 1;
+  }else if(Nodo.hijos.length==5){
+    return this.NumParametros(Nodo.hijos[0])+1;
+
+  }
+}
+
+
+RecogerFunciones(Nodo){
+  switch(Nodo.nombre){
+      case "ini":
+        this.RecogerFunciones(Nodo.hijos[0]);
+        break;
+      case "instrucciones":
+          if(Nodo.hijos.length==2){
+              
+             
+                this.RecogerFunciones(Nodo.hijos[0]);
+              
+              
+              this.RecogerFunciones(Nodo.hijos[1]);
+          }else if(Nodo.hijos.length==1){
+            
+                this.RecogerFunciones(Nodo.hijos[0]);
+              
+              
+          }
+        break;
+      case "instruccion":
+
+            if(Nodo.hijos[0].nombre=="Rfunction"){
+              
+              if(Nodo.hijos.length==8){
+                let id=Nodo.hijos[1].valor;
+                this.RecogerFunciones(Nodo.hijos[6]);
+                let tipo=Nodo.hijos[6].valor;
+                this.RecogerFunciones(Nodo.hijos[3]);
+                
+                this.tbGlobal.tabla.push({nombre:id,tipo:tipo,valor:"",rol:"funcion",parametros:Nodo.hijos[3].parametros,valores:null,nodo:Nodo,return:""});
+                
+
+              }else if(Nodo.hijos.length==7){
+                let id=Nodo.hijos[1].valor;
+                this.RecogerFunciones(Nodo.hijos[5]);
+                let tipo=Nodo.hijos[5].valor;
+                let parametros=[];
+                this.tbGlobal.tabla.push({nombre:id,tipo:tipo,valor:"",rol:"funcion",parametros:parametros,valores:null,nodo:Nodo,return:""});
+
+              }
+              
+            }
+        break;
+
+    case "Param":
+            if(Nodo.hijos.length==5){
+                this.RecogerFunciones(Nodo.hijos[0]);
+                this.RecogerFunciones(Nodo.hijos[4]);
+                for(let item of Nodo.hijos[0].parametros){
+                    Nodo.parametros.push(item);
+                }
+                Nodo.parametros.push({nombre:Nodo.hijos[2].valor,tipo:Nodo.hijos[4].valor});
+
+            }else if(Nodo.hijos.length==3){
+                this.RecogerFunciones(Nodo.hijos[2]);
+                Nodo.parametros.push({nombre:Nodo.hijos[0].valor,tipo:Nodo.hijos[2].valor});
+            }
+      break;
+
+      case "Ntipo":
+        if(Nodo.hijos.length==1){
+          Nodo.valor=Nodo.hijos[0].valor;
+        }else if(Nodo.hijos.length==3){
+          Nodo.valor="arr";
+        }
+        
+        break;
+  }
+
+}
 
 
 }

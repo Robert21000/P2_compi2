@@ -2770,7 +2770,7 @@ var columna=0;
 
 
 class Nodo{
-	constructor(cod,direc,tip,Lsig,Ltr,Lfal,cond){
+	constructor(cod,direc,tip,Lsig,Ltr,Lfal,cond,vales){
 		this.codigo=cod;
 		this.direccion=direc;
 		this.tipo=tip;
@@ -2778,6 +2778,7 @@ class Nodo{
 		this.Ltrue=Ltr;
 		this.Lfalse=Lfal;
 		this.condicion=cond;
+		this.valores=vales;
 	}
 }
 

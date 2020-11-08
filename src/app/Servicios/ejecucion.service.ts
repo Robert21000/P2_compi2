@@ -53,6 +53,13 @@ getErrores(){
 }
 
 
+getFunciones(){
+
+
+  return this.tbGlobal.tabla; 
+}
+
+
 
 
 
