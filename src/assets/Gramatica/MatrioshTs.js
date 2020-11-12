@@ -2777,7 +2777,7 @@ class Nodo{
 		this.Lsiguiente=Lsig;
 		this.Ltrue=Ltr;
 		this.Lfalse=Lfal;
-		this.condicion=cond;
+		this.condicion="";
 		this.valores=vales;
 	}
 }
