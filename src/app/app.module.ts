@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { NavBarComponent } from './Componentes/nav-bar/nav-bar.component';
 import { HomeComponent } from './Componentes/home/home.component';
 import { ArbolComponent } from './Componentes/arbol/arbol.component';
+import { OptimizacionComponent } from './Componentes/optimizacion/optimizacion.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavBarComponent,
     HomeComponent,
-    ArbolComponent
+    ArbolComponent,
+    OptimizacionComponent
   ],
   imports: [
     BrowserModule,

@@ -46,7 +46,7 @@
 <section style="background-image: url('assets/natalie2.jpg');">
 <div class="container">
   <div class="row">
-    <h1 style="color: white; background-color: black;" >Codigo 3D</h1>
+    
     <ngx-codemirror
     [(ngModel)]="consola"
      [options]="{
@@ -55,7 +55,19 @@
        mode: 'text/x-csrc'
      }"
    ></ngx-codemirror>
+   
+   <ngx-codemirror
+   [(ngModel)]="txtoptimizado"
+    [options]="{
+      lineNumbers: true,
+      theme: 'tomorrow-night-eighties',
+      mode: 'text/x-csrc'
+    }"
+  ></ngx-codemirror>
   </div>
+  <button  type  ="button" class="btn btn-primary"(click)="Optimizar()">optimizar</button>
+  <button  type  ="button" class="btn btn-danger"(click)="ReporteOpt()">Reportar</button>
+
   </div>
 </section>
 
@@ -113,6 +125,33 @@
 </div>
 
 </section>
+<section>
+  <div class="container">
+    <h1 style="color: white;">Reporte Optimización</h1>
+    <table class="table table-dark">
+      <thead>
+        <tr>
+          <th scope="col">Tipo</th>
+          <th scope="col">Regla Aplicada</th>
+          <th scope="col">Codigo Eliminado</th>
+          <th scope="col">Codigo Agreagado</th>
+          <th scope="col">Fila</th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr *ngFor="let item of listaOpt" style="color: white;">
+          <td>{{item.tipo}}</td>
+          <td>{{item.regla}}</td>
+          <td>{{item.ce}}</td>
+          <td>{{item.ca}}</td>
+          <td>{{item.fila}}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+
+</section>
+
 
 <section>
 <div class="container">
@@ -123,6 +162,8 @@
         <th scope="col">Nombre</th>
         <th scope="col">Tipo</th>
         <th scope="col">Rol</th>
+        <th scope="col">Ambito</th>
+        <th scope="col">Posicion</th>
       </tr>
     </thead>
     <tbody >
@@ -130,6 +171,8 @@
         <td>{{item.nombre}}</td>
         <td>{{item.tipo}}</td>
         <td>{{item.rol}}</td>
+        <td>{{item.ambito}}</td>
+        <td>{{item.direccion}}</td>
       </tr>
     </tbody>
   </table>

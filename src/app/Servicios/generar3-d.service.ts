@@ -26,7 +26,7 @@ export class Generar3DService {
 
     let ptr=0;
     this.RecogerFunciones(Nodo);
-    this.Recorre(Nodo,this.tbGlobal,ptr,"","");
+    this.Recorre(Nodo,this.tbGlobal,ptr,"","","");
     this.encabezado="#include <stdio.h>\n";
     this.encabezado+="#include <math.h>\n";
     this.encabezado+="double ";
@@ -49,13 +49,18 @@ export class Generar3DService {
   }
 
 
-  Recorre(Nodo,tbs,ptr,lt,lf){
+  getTabla(){
+
+    return this.tbGlobal.tabla;
+  }
+
+  Recorre(Nodo,tbs,ptr,lt,lf,lr){
         switch(Nodo.nombre){
             case "ini":
             
               this.TamanioAmbito(Nodo.hijos[0],tbs);
               //tbs.tamanio=tamanio;
-              this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+              this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
               this.generado+=Nodo.hijos[0].clase.codigo;
               
               break;
@@ -64,7 +69,7 @@ export class Generar3DService {
                   let codigo="";
                   if(Nodo.hijos[0].hijos[0].nombre!="Rfunction"){
                     Nodo.hijos[0].clase.Lfalse=Nodo.clase.Lfalse;
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     codigo+=Nodo.hijos[0].clase.codigo;
                   }
                     
@@ -73,10 +78,10 @@ export class Generar3DService {
                    let codigo1="";
                    let codigo2=""; 
                   if(Nodo.hijos[0].hijos[0].nombre!="Rfunction"){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     codigo1+=Nodo.hijos[0].clase.codigo;
                   }
-                    this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                     codigo2+=Nodo.hijos[1].clase.codigo;
                     Nodo.clase.codigo=codigo1+codigo2;
                 }
@@ -84,7 +89,7 @@ export class Generar3DService {
             case "instruccion":
 
               if(Nodo.hijos[0].nombre=="Rconsole"){
-                  this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                  this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
                   if(Nodo.hijos[4].clase.tipo=="number"){
                     let codigo="";
                     codigo+=Nodo.hijos[4].clase.codigo;
@@ -133,21 +138,21 @@ export class Generar3DService {
                   }
                   
               }else if(Nodo.hijos[0].nombre=="DecLet"){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
               }else if(Nodo.hijos[0].nombre=="DecConst"){
-                this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                 Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
               }else if(Nodo.hijos[0].nombre=="id"){
                   if(Nodo.hijos.length==4){
                       if(Nodo.hijos[1].nombre=="igual"){
-                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                           if(Nodo.hijos[2].clase.tipo=="boolean"){
                               let L0=this.nuevoTemp();
                               let L1=this.nuevoTemp();
                               Nodo.hijos[2].clase.Ltrue=L0;
                               Nodo.hijos[2].clase.Lfalse=L1;
-                              this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                              this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                               let codigo2="";
                               let tmpBool=this.nuevoTemp();
                               codigo2+=tmpBool+"=0;\n";
@@ -170,19 +175,19 @@ export class Generar3DService {
                       }else if(Nodo.hijos[1].nombre=="pIzq"){
                           let id=Nodo.hijos[0].valor.toLowerCase();
                           
-                          this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+                          this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf,lr);
                           Nodo.clase.codigo=this.getNodofuncion(id).clase.codigo;
                           
                       }
                   }else if(Nodo.hijos.length==5){
                     let id=Nodo.hijos[0].valor.toLowerCase();
-                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                     console.log(Nodo.hijos[2].valores);
                     console.log(Nodo.hijos[2].clase.codigo);
 
                     this.getNodofuncion(id).clase.valores=Nodo.hijos[2].valores;
                     this.getNodofuncion(id).clase.codigo=Nodo.hijos[2].clase.codigo;
-                    this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+                    this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf,lr);
                     Nodo.clase.codigo=this.getNodofuncion(id).clase.codigo;
                     
 
@@ -190,7 +195,7 @@ export class Generar3DService {
 
               }else if(Nodo.hijos[0].nombre=="Rfunction"){
                     if(Nodo.hijos.length==7){
-                        this.Recorre(Nodo.hijos[5],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[5],tbs,ptr,lt,lf,lr);
                         let tipo=Nodo.hijos[5].valor;
                       if(tipo.toLowerCase()=="void"){
                         let tini=this.nuevaLabel();
@@ -205,7 +210,7 @@ export class Generar3DService {
                          let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
                          this.TamanioAmbito(Nodo.hijos[6],tbsLocal);
                          /** */
-                        this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,final);
+                        this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,lf,final);
                          /** */
                          let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
                          ptr=ptr-tbs.tamanio;
@@ -226,7 +231,7 @@ export class Generar3DService {
                          let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
                          this.TamanioAmbito(Nodo.hijos[6],tbsLocal);
                          /** */
-                        this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,final);
+                        this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,lf,final);
                          /** */
                          let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
                          ptr=ptr-tbs.tamanio;
@@ -244,7 +249,7 @@ export class Generar3DService {
                       }
                      
                     }else if(Nodo.hijos.length==8){
-                      this.Recorre(Nodo.hijos[6],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[6],tbs,ptr,lt,lf,lr);
                       let tipo=Nodo.hijos[6].valor;
                           if(tipo.toLowerCase()=="void"){
                             let tini=this.nuevaLabel();
@@ -259,7 +264,7 @@ export class Generar3DService {
                             let tabla=[];
                             let tbsLocal={tabla:tabla,padre:this.tbGlobal,tamanio:0,actual:0}
                             let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
-                            this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
+                            this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf,lr);
                             let codParam=Nodo.hijos[3].clase.codigo;
                             codigo+=codigo4+codParam+codigoExp;
                             console.log(Nodo.clase.valores);
@@ -272,7 +277,7 @@ export class Generar3DService {
                             this.TamanioAmbito(Nodo.hijos[7],tbsLocal);
                             tbsLocal.tamanio+=this.NumParametros(Nodo.hijos[3]);
                             /** */
-                            this.Recorre(Nodo.hijos[7],tbsLocal,ptr,lt,final);
+                            this.Recorre(Nodo.hijos[7],tbsLocal,ptr,lt,lf,final);
                             /** */
                             let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
                             ptr=ptr-tbs.tamanio;
@@ -295,7 +300,7 @@ export class Generar3DService {
                             let tabla=[];
                             let tbsLocal={tabla:tabla,padre:this.tbGlobal,tamanio:0,actual:0}
                             let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
-                            this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
+                            this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf,lr);
                             let codParam=Nodo.hijos[3].clase.codigo;
                             codigo+=codigo4+codParam+codigoExp;
                             console.log(Nodo.clase.valores);
@@ -308,7 +313,7 @@ export class Generar3DService {
                             this.TamanioAmbito(Nodo.hijos[7],tbsLocal);
                             tbsLocal.tamanio+=this.NumParametros(Nodo.hijos[3]);
                             /** */
-                            this.Recorre(Nodo.hijos[7],tbsLocal,ptr,lt,final);
+                            this.Recorre(Nodo.hijos[7],tbsLocal,ptr,lt,lf,final);
                             /** */
                             let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
                             ptr=ptr-tbs.tamanio;
@@ -334,7 +339,7 @@ export class Generar3DService {
                         let L1=this.nuevaLabel();
                         //Nodo.hijos[1].clase.Ltrue=L0; 
                         //Nodo.hijos[1].clase.Lfalse=L1;
-                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                         let codigo1=Nodo.hijos[1].clase.codigo;
                         //***************** */
                         ptr=ptr+tbs.tamanio;
@@ -343,7 +348,7 @@ export class Generar3DService {
                         let codigo9="ptr=ptr+"+tbs.tamanio+";\n";
                         this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
                         /** */
-                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf,lr);
                         let codigo2=Nodo.hijos[2].clase.codigo;
                         /** */
                         let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
@@ -363,7 +368,7 @@ export class Generar3DService {
                         let L1=this.nuevaLabel();
                         let L2=this.nuevaLabel();
                         
-                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                         let direccion1=Nodo.hijos[1].clase.direccion;
                         let codigo1=Nodo.hijos[1].clase.codigo;
                         /** */
@@ -374,7 +379,7 @@ export class Generar3DService {
                         this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
                         /** */
 
-                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf,lr);
                         let codigo2=Nodo.hijos[2].clase.codigo;
                         /** */
                         let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
@@ -384,7 +389,7 @@ export class Generar3DService {
                                                
                         Nodo.hijos[3].clase.Ltrue=L1;
                         Nodo.hijos[3].clase.Lfalse=L2;
-                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf,lr);
                         let codigo3=Nodo.hijos[3].clase.codigo;
                         
 
@@ -405,7 +410,7 @@ export class Generar3DService {
                         let L3=this.nuevaLabel();
 
                         
-                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                         let codigo1=Nodo.hijos[1].clase.codigo;
                         let direccion1=Nodo.hijos[1].clase.direccion;
                         /** */
@@ -416,7 +421,7 @@ export class Generar3DService {
                         this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
                         /** */                        
                         
-                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf,lr);
                         let codigo2=Nodo.hijos[2].clase.codigo;
 
                         //** */
@@ -426,12 +431,12 @@ export class Generar3DService {
                         
                         Nodo.hijos[3].clase.Ltrue=L1;
                         Nodo.hijos[3].clase.Lfalse=L2;
-                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf,lr);
                         let codigo3=Nodo.hijos[3].clase.codigo;
 
                         Nodo.hijos[4].clase.Ltrue=Nodo.hijos[3].clase.Ltrue;
                         Nodo.hijos[4].clase.Lfalse=L2;
-                        this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
 
                         let codigo4=Nodo.hijos[4].clase.codigo;
                         
@@ -448,7 +453,7 @@ export class Generar3DService {
                     let L1=this.nuevaLabel();
                    // Nodo.hijos[1].clase.Ltrue=L0; 
                     //Nodo.hijos[1].clase.Lfalse=L1;
-                    this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                     let codigo1=Nodo.hijos[1].clase.codigo;
                     let direccion1=Nodo.hijos[1].clase.direccion;
                     
@@ -459,7 +464,7 @@ export class Generar3DService {
                     let codigo9="ptr=ptr+"+tbs.tamanio+";\n";
                     this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
                     /** */
-                    this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,L1);
+                    this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,L1,lr);
                     let codigo2=Nodo.hijos[2].clase.codigo;
                     //** */
                       let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
@@ -486,14 +491,14 @@ export class Generar3DService {
                      let codigo9="ptr=ptr+"+tbs.tamanio+";\n";
                      this.TamanioAmbito(Nodo.hijos[1],tbsLocal);
                      /** */
-                    this.Recorre(Nodo.hijos[1],tbsLocal,ptr,lt,L1);
+                    this.Recorre(Nodo.hijos[1],tbsLocal,ptr,lt,L1,lr);
                     let codigo1=Nodo.hijos[1].clase.codigo;
                     //** */
                     let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
                     ptr=ptr-tbs.tamanio;
                     /** */
 
-                    this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf,lr);
                     let codigo3=Nodo.hijos[3].clase.codigo;
                     let direccion3=Nodo.hijos[3].clase.direccion;
           
@@ -502,7 +507,7 @@ export class Generar3DService {
                     Nodo.clase.codigo=codigo;
 
               }else if(Nodo.hijos[0].nombre=="Rswitch"){
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                       let codigo1=Nodo.hijos[2].clase.codigo;
                       let direccion=Nodo.hijos[2].clase.direccion;
 
@@ -510,10 +515,10 @@ export class Generar3DService {
                       let L1=this.nuevaLabel();
 
                       Nodo.hijos[5].clase.direccion=direccion;
-                      this.Recorre(Nodo.hijos[5],tbs,ptr,lt,L1);
+                      this.Recorre(Nodo.hijos[5],tbs,ptr,lt,L1,lr);
                       let codigo5=Nodo.hijos[5].clase.codigo;
                       let codigo="";
-                      this.Recorre(Nodo.hijos[6],tbs,ptr,lt,L1);
+                      this.Recorre(Nodo.hijos[6],tbs,ptr,lt,L1,lr);
                       let codigo6=Nodo.hijos[6].clase.codigo;
                       codigo+=codigo1+codigo5+Nodo.hijos[5].clase.Ltrue+":\n"+codigo6+" goto "+L1+";\n"+L1+":\n";
                       Nodo.clase.codigo=codigo;
@@ -535,7 +540,7 @@ export class Generar3DService {
                        let codigo9="ptr=ptr+"+tbs.tamanio+";\n";
                        
                        /** */
-                      this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf,lr);
                       let codigo2=Nodo.hijos[2].clase.codigo;
                       this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
                       this.TamanioAmbito(Nodo.hijos[8],tbsLocal);
@@ -547,12 +552,12 @@ export class Generar3DService {
                       //Nodo.hijos[4].clase.Ltrue=L0; 
                       //Nodo.hijos[4].clase.Lfalse=L1;
                       //Nodo.hijos[4].clase.codicion="condicion";
-                      this.Recorre(Nodo.hijos[4],tbsLocal,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[4],tbsLocal,ptr,lt,lf,lr);
                       let codigo4=Nodo.hijos[4].clase.codigo;
                       let direccion4=Nodo.hijos[4].clase.direccion;
-                      this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[6],tbsLocal,ptr,lt,lf,lr);
                       let codigo6=Nodo.hijos[6].clase.codigo;
-                      this.Recorre(Nodo.hijos[8],tbsLocal,ptr,lt,L2);
+                      this.Recorre(Nodo.hijos[8],tbsLocal,ptr,lt,L2,lr);
                       let codigo8=Nodo.hijos[8].clase.codigo;
                       ptr=ptr-tbs.tamanio;
                       //codigo+=codigo9+codigo2+Lregresa+":\n"+codigo4+L0+":\n"+codigo8+codigo6+"goto "+Lregresa+";\n"+L1+":\n"+codigo10;  
@@ -566,19 +571,19 @@ export class Generar3DService {
 
                   Nodo.clase.codigo="ptr=ptr-"+tbs.padre.tamanio+";\n"+"goto "+lf+";\n";
               }else if(Nodo.hijos[0].nombre=="Aumento"){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
               }else if(Nodo.hijos[0].nombre=="Decremento"){
-                this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                 Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
               }else if(Nodo.hijos[0].nombre=="Rreturn"){
                 if(Nodo.hijos.length==2){
 
-                    Nodo.clase.codigo="goto "+lf+";\n";
+                    Nodo.clase.codigo="ptr=ptr-"+tbs.padre.tamanio+";\n"+"goto "+lr+";\n";
                 }else if(Nodo.hijos.length==3){
                   
                   let codigo="";
-                  this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                  this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                   let tipo=Nodo.hijos[1].clase.tipo;
                   let codigo1=Nodo.hijos[1].clase.codigo;
                   let direccion1=Nodo.hijos[1].clase.direccion;
@@ -588,8 +593,7 @@ export class Generar3DService {
                   this.declararSinExp("return",tipo,"let",tbs);
                   tbs.actual+=1;
                   Nodo.clase.codigo=codigo1+codigo;
-                  console.log("return");
-                  console.log(Nodo.clase.codigo);
+                 
                 }
                 
 
@@ -657,7 +661,7 @@ export class Generar3DService {
 
                   if(Nodo.hijos[0].nombre=="menos"){
                       let codigo="";
-                      this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                       let dir=Nodo.hijos[1].clase.direccion;
                       let codigo1=Nodo.hijos[1].clase.codigo;
                       let t1=this.nuevoTemp();
@@ -671,7 +675,7 @@ export class Generar3DService {
 
                     }else if(Nodo.hijos[0].nombre=="neg"){
 
-                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                         let codigo1=Nodo.hijos[1].clase.codigo;
                         let direccion1=Nodo.hijos[1].clase.direccion;
                         let codigo="";
@@ -698,8 +702,8 @@ export class Generar3DService {
 
                   if(Nodo.hijos[1].nombre=="mas"){
 
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
 
 
                      if(Nodo.hijos[0].clase.tipo=="string"&&Nodo.hijos[2].clase.tipo=="string"){
@@ -824,39 +828,41 @@ export class Generar3DService {
                       
                   
                     }else if(Nodo.hijos[1].nombre=="menos"){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                     Nodo.clase.direccion=this.nuevoTemp();  
                     Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo+Nodo.clase.direccion+"="+Nodo.hijos[0].clase.direccion+"-"+Nodo.hijos[2].clase.direccion+";\n";
                     Nodo.clase.tipo="number";  
                   }else if(Nodo.hijos[1].nombre=="por"){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                     Nodo.clase.direccion=this.nuevoTemp();  
                     Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo+Nodo.clase.direccion+"="+Nodo.hijos[0].clase.direccion+"*"+Nodo.hijos[2].clase.direccion+";\n";
                     Nodo.clase.tipo="number";
                   }else if(Nodo.hijos[1].nombre=="div"){
-                  this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                  this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                  this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                  this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                   Nodo.clase.direccion=this.nuevoTemp();  
                   Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo+Nodo.clase.direccion+"="+Nodo.hijos[0].clase.direccion+"/"+Nodo.hijos[2].clase.direccion+";\n";
                   Nodo.clase.tipo="number";  
                 }else if(Nodo.hijos[1].nombre=="mod"){
-                  this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                  this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                  this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                  this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                   Nodo.clase.direccion=this.nuevoTemp();  
                   Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo+Nodo.clase.direccion+"=fmod("+Nodo.hijos[0].clase.direccion+","+Nodo.hijos[2].clase.direccion+");\n";
                   Nodo.clase.tipo="number";  
                 }else if(Nodo.hijos[1].nombre=="pot"){
                       let codigo="";
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                      let codigo0=Nodo.hijos[0].clase.codigo;
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
+                      let codigo2=Nodo.hijos[2].clase.codigo;
                       let temp0=this.nuevoTemp();
                       let temp1=this.nuevoTemp();
                       let temp2=this.nuevoTemp();
 
-                      codigo+=temp0+"="+Nodo.hijos[0].clase.direccion+";\n";
-                      codigo+=temp1+"="+Nodo.hijos[2].clase.direccion+";\n";
+                      codigo+=codigo0+temp0+"="+Nodo.hijos[0].clase.direccion+";\n";
+                      codigo+=codigo2+temp1+"="+Nodo.hijos[2].clase.direccion+";\n";
                       let L1=this.nuevaLabel();
                       let L2=this.nuevaLabel();
                       let L3=this.nuevaLabel();
@@ -875,10 +881,11 @@ export class Generar3DService {
                       Nodo.clase.codigo=codigo;
                       Nodo.clase.direccion=temp2;
                       Nodo.clase.tipo="number";
+
                   }else if(Nodo.hijos[1].nombre=="mayor"){
                      
-                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                         let codigo0=Nodo.hijos[0].clase.codigo;
                         let codigo2=Nodo.hijos[2].clase.codigo;
                         let direccion0=Nodo.hijos[0].clase.direccion;
@@ -899,8 +906,8 @@ export class Generar3DService {
 
                   }else if(Nodo.hijos[1].nombre=="menor"){
                      
-                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                         let codigo0=Nodo.hijos[0].clase.codigo;
                         let codigo2=Nodo.hijos[2].clase.codigo;
                         let direccion0=Nodo.hijos[0].clase.direccion;
@@ -920,8 +927,8 @@ export class Generar3DService {
                         Nodo.clase.codigo=codigo0+codigo2+codigo;
                                     
                   }else if(Nodo.hijos[1].nombre=="mayorq"){
-                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                         let codigo0=Nodo.hijos[0].clase.codigo;
                         let codigo2=Nodo.hijos[2].clase.codigo;
                         let direccion0=Nodo.hijos[0].clase.direccion;
@@ -942,8 +949,8 @@ export class Generar3DService {
 
                   }else if(Nodo.hijos[1].nombre=="menorq"){
 
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                       let codigo0=Nodo.hijos[0].clase.codigo;
                       let codigo2=Nodo.hijos[2].clase.codigo;
                       let direccion0=Nodo.hijos[0].clase.direccion;
@@ -964,8 +971,8 @@ export class Generar3DService {
 
                   }else if(Nodo.hijos[1].nombre=="dbigual"){
                       let codigo="";
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                     if(Nodo.hijos[0].clase.tipo=="string"&&Nodo.hijos[2].clase.tipo=="string"){
                     
                         let codigo1=Nodo.hijos[0].clase.codigo;
@@ -979,7 +986,7 @@ export class Generar3DService {
                         codigo+=codigo1+codigo2+this.getIgualstring(L0,L1,direccion1,direccion2);
                         codigo+=L0+":\n";
                         codigo+=tmpBool+"=1;\n";
-                        codigo+L1+":\n";
+                        codigo+=L1+":\n";
                         Nodo.clase.codigo=codigo;
                         Nodo.clase.tipo="boolean";  
                         Nodo.clase.direccion=tmpBool;
@@ -1009,8 +1016,8 @@ export class Generar3DService {
 
                   }else if(Nodo.hijos[1].nombre=="difer"){
                     let codigo="";
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                     
                     if(Nodo.hijos[0].clase.tipo=="string"&&Nodo.hijos[2].clase.tipo=="string"){
 
@@ -1025,15 +1032,15 @@ export class Generar3DService {
                         codigo+=codigo1+codigo2+this.getIgualstring(L1,L0,direccion1,direccion2);
                         codigo+=L0+":\n";
                         codigo+=tmpBool+"=1;\n";
-                        codigo+L1+":\n";
+                        codigo+=L1+":\n";
                         Nodo.clase.codigo=codigo;
                         Nodo.clase.tipo="boolean";  
                         Nodo.clase.direccion=tmpBool;
 
                     }else{
                         
-                          this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                           let codigo0=Nodo.hijos[0].clase.codigo;
                           let codigo2=Nodo.hijos[2].clase.codigo;
                           let direccion0=Nodo.hijos[0].clase.direccion;
@@ -1056,8 +1063,8 @@ export class Generar3DService {
                     }
 
                   }else if(Nodo.hijos[1].nombre=="or"){
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                       let codigo0=Nodo.hijos[0].clase.codigo;
                       let codigo2=Nodo.hijos[2].clase.codigo;
                       let direccion0=Nodo.hijos[0].clase.direccion;
@@ -1088,8 +1095,8 @@ export class Generar3DService {
                   }else if(Nodo.hijos[1].nombre=="and"){
 
                         let codigo="";
-                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                         let codigo0=Nodo.hijos[0].clase.codigo;
                         let codigo2=Nodo.hijos[2].clase.codigo;
                         let direccion0=Nodo.hijos[0].clase.direccion;
@@ -1115,24 +1122,24 @@ export class Generar3DService {
                   }else if(Nodo.hijos[1].nombre=="pIzq"){
                       
                       let id=Nodo.hijos[0].valor.toLowerCase();
-                      this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+                      this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf,lr);
                       Nodo.clase.codigo=this.getNodofuncion(id).clase.codigo;
                       Nodo.clase.direccion=this.getNodofuncion(id).clase.direccion;
                       Nodo.clase.tipo=this.getTipofuncion(id);
                       
                   
                   }else if(Nodo.hijos[1].nombre=="Exp"){
-                      Nodo.hijos[1].clase.Ltrue=Nodo.clase.Ltrue;
-                      Nodo.hijos[1].clase.Lfalse=Nodo.clase.Lfalse;
-                      Nodo.hijos[1].clase.condicion=Nodo.clase.condicion;
-                      this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);  
+                      //Nodo.hijos[1].clase.Ltrue=Nodo.clase.Ltrue;
+                      //Nodo.hijos[1].clase.Lfalse=Nodo.clase.Lfalse;
+                      //Nodo.hijos[1].clase.condicion=Nodo.clase.condicion;
+                      this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);  
                       Nodo.clase.codigo=Nodo.hijos[1].clase.codigo;
                       Nodo.clase.tipo=Nodo.hijos[1].clase.tipo;
                       Nodo.clase.direccion=Nodo.hijos[1].clase.direccion;
                   }else if(Nodo.hijos[1].nombre=="punto"){
                     
                     let codigo="";
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     let codigo0=Nodo.hijos[0].clase.codigo;
                     let direccion0=Nodo.hijos[0].clase.direccion;
                     let t1=this.nuevoTemp();
@@ -1151,11 +1158,11 @@ export class Generar3DService {
 
               }else if(Nodo.hijos.length==4){
                     let id=Nodo.hijos[0].valor.toLowerCase();
-                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
 
                     this.getNodofuncion(id).clase.valores=Nodo.hijos[2].valores;
                     this.getNodofuncion(id).clase.codigo=Nodo.hijos[2].clase.codigo;
-                    this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf);
+                    this.Recorre(this.getNodofuncion(id),tbs,ptr,lt,lf,lr);
 
                     console.log(this.getNodofuncion(id).clase.codigo);
                     console.log(this.getNodofuncion(id).clase.direccion);
@@ -1167,15 +1174,15 @@ export class Generar3DService {
               }else if(Nodo.hijos.length==5){
 
                   if(Nodo.hijos[2].nombre=="Exp"){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     let codigo0=Nodo.hijos[0].clase.codigo;
                     let direccion0=Nodo.hijos[0].clase.direccion;
   
-                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                     let codigo2=Nodo.hijos[2].clase.codigo;
                     let direccion2=Nodo.hijos[2].clase.direccion;
   
-                    this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
                     let codigo4=Nodo.hijos[4].clase.codigo;
                     let direccion4=Nodo.hijos[4].clase.direccion;
   
@@ -1202,7 +1209,7 @@ export class Generar3DService {
                     Nodo.clase.direccion=tmpRet;
 
                   }else if(Nodo.hijos[2].nombre=="Rtolowercase"){
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                       let codigo0=Nodo.hijos[0].clase.codigo;
                       let direccion0=Nodo.hijos[0].clase.direccion;
                       let t1=this.nuevoTemp();
@@ -1216,8 +1223,9 @@ export class Generar3DService {
                       let L4=this.nuevaLabel();
 
                       let codigo="";
-                      codigo+=t3+"=h;\n";
+                      
                       codigo+=codigo0+t1+"="+direccion0+";\n";
+                      codigo+=t3+"=h;\n";
                       codigo+=L0+":\n";
                       codigo+="if(heap[(int)"+t1+"]>=65) goto "+L1+";\n goto "+L3+";\n";
                       codigo+=L1+":\n"
@@ -1240,7 +1248,7 @@ export class Generar3DService {
                       Nodo.clase.direccion=t3;
 
                   }else if(Nodo.hijos[2].nombre=="Rtouppercase"){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     let codigo0=Nodo.hijos[0].clase.codigo;
                     let direccion0=Nodo.hijos[0].clase.direccion;
                     let t1=this.nuevoTemp();
@@ -1254,8 +1262,9 @@ export class Generar3DService {
                     let L4=this.nuevaLabel();
 
                     let codigo="";
-                    codigo+=t3+"=h;\n";
+                   
                     codigo+=codigo0+t1+"="+direccion0+";\n";
+                    codigo+=t3+"=h;\n";
                     codigo+=L0+":\n";
                     codigo+="if(heap[(int)"+t1+"]>=97) goto "+L1+";\n goto "+L3+";\n";
                     codigo+=L1+":\n"
@@ -1283,11 +1292,11 @@ export class Generar3DService {
               }else if(Nodo.hijos.length==6){
                     if(Nodo.hijos[2].nombre=="Rcharat"){
                       let codigo="";
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                       let codigo0=Nodo.hijos[0].clase.codigo;
                       let direccion0=Nodo.hijos[0].clase.direccion;
 
-                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
                       let codigo4=Nodo.hijos[4].clase.codigo;
                       let direccion4=Nodo.hijos[4].clase.direccion;
 
@@ -1321,11 +1330,11 @@ export class Generar3DService {
 
                     }else if(Nodo.hijos[2].nombre=="Rconcat"){
 
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                       let codigo0=Nodo.hijos[0].clase.codigo;
                       let direccion0=Nodo.hijos[0].clase.direccion;
 
-                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
                       let codigo4=Nodo.hijos[4].clase.codigo;
                       let direccion4=Nodo.hijos[4].clase.direccion;
                       
@@ -1342,17 +1351,17 @@ export class Generar3DService {
               break;
 
               case "DecLet":
-                  this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                  this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                   Nodo.clase.codigo=Nodo.hijos[1].clase.codigo;
                 break;
 
               case "Lasig":
                   if(Nodo.hijos.length==1){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                     Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
                   }else if(Nodo.hijos.length==3){
-                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                    this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                     Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo;
                   }
                 break;
@@ -1360,7 +1369,7 @@ export class Generar3DService {
                case "IA":
 
                     if(Nodo.hijos.length==3){
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                         let id=Nodo.hijos[0].valor;
                         let tipo=Nodo.hijos[2].valor;
                         let codigo="";
@@ -1394,10 +1403,10 @@ export class Generar3DService {
 
                         }
                     }else if(Nodo.hijos.length==5){
-                      //this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                      //this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                       Nodo.hijos[4].clase.condicion="";
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
+                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
                       let id=Nodo.hijos[0].valor.toLowerCase();
                       let tipo=Nodo.hijos[2].valor.toLowerCase();
                       let codigo="";
@@ -1453,24 +1462,24 @@ export class Generar3DService {
                  break;
               
                case "DecConst":
-                    this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                    this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                     Nodo.clase.codigo=Nodo.hijos[1].clase.codigo;
                  break;
                case "Lconst":
                     if(Nodo.hijos.length==1){
-                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                         Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
                     }else if(Nodo.hijos.length==3){
-                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                       Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo;
                     }   
                  break;
                case "CA":
                     if(Nodo.hijos.length==5){
 
-                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
-                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
+                      this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
 
                       let id=Nodo.hijos[0].valor.toLowerCase();
                       let tipo=Nodo.hijos[2].valor.toLowerCase();
@@ -1518,7 +1527,7 @@ export class Generar3DService {
                         Nodo.clase.codigo=Nodo.hijos[1].codigo;
                         Nodo.hijos[1].clase.Ltrue=Nodo.clase.Ltrue;
                         Nodo.hijos[1].clase.Lfalse=Nodo.clase.Lfalse;
-                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                         Nodo.clase.codigo=Nodo.hijos[1].clase.codigo;
                         Nodo.clase.direccion=Nodo.hijos[1].clase.direccion;
                         Nodo.clase.tipo=Nodo.hijos[1].clase.tipo;
@@ -1528,7 +1537,7 @@ export class Generar3DService {
                 case "BloqueIns":
                     if(Nodo.hijos.length==3){
 
-                      this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                      this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
 
                       Nodo.clase.codigo=Nodo.hijos[1].clase.codigo;
                     }
@@ -1542,7 +1551,7 @@ export class Generar3DService {
                         let L1=this.nuevaLabel();
                         //Nodo.hijos[2].clase.Ltrue=L0; 
                         //Nodo.hijos[2].clase.Lfalse=L1;
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                         let direccion2=Nodo.hijos[2].clase.direccion;
                         let codigo2=Nodo.hijos[2].clase.codigo;
                           /** */
@@ -1552,7 +1561,7 @@ export class Generar3DService {
                           let codigo9="ptr=ptr+"+tbs.tamanio+";\n";
                           this.TamanioAmbito(Nodo.hijos[3],tbsLocal);
                           /** */
-                          this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf,lr);
                           let codigo3=Nodo.hijos[3].clase.codigo;
                         /** */
                         let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
@@ -1574,10 +1583,10 @@ export class Generar3DService {
 
                         Nodo.hijos[0].clase.Ltrue=Nodo.clase.Ltrue; 
                         Nodo.hijos[0].clase.Lfalse=Nodo.clase.Lfalse;
-                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                         let codigo0=Nodo.hijos[0].clase.codigo;
 
-                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf,lr);
                         let direccion3=Nodo.hijos[3].clase.direccion;
                         let codigo3=Nodo.hijos[3].clase.codigo;
                         /** */
@@ -1588,7 +1597,7 @@ export class Generar3DService {
                         this.TamanioAmbito(Nodo.hijos[4],tbsLocal);
                         /** */
                         
-                        this.Recorre(Nodo.hijos[4],tbsLocal,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[4],tbsLocal,ptr,lt,lf,lr);
                         let codigo4=Nodo.hijos[4].clase.codigo;
                         /** */
                         let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
@@ -1615,7 +1624,7 @@ export class Generar3DService {
                           let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
                           this.TamanioAmbito(Nodo.hijos[1],tbsLocal);
                           /** */
-                          this.Recorre(Nodo.hijos[1],tbsLocal,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[1],tbsLocal,ptr,lt,lf,lr);
                           /** */
                           let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
                           ptr=ptr-tbs.tamanio;
@@ -1630,7 +1639,7 @@ export class Generar3DService {
                   case "Ncase":
                     if(Nodo.hijos.length==4){
                         let codigo="";
-                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[1],tbs,ptr,lt,lf,lr);
                         let  direccion1=Nodo.hijos[1].clase.direccion;
                         let codigo1=Nodo.hijos[1].clase.codigo; 
                         /** */
@@ -1640,7 +1649,7 @@ export class Generar3DService {
                         let codigo9="ptr=ptr+"+tbs.tamanio+";\n";
                         this.TamanioAmbito(Nodo.hijos[3],tbsLocal);
                         /** */
-                        this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[3],tbsLocal,ptr,lt,lf,lr);
                         let codigo3=Nodo.hijos[3].clase.codigo;
                         /** */
                         let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
@@ -1660,9 +1669,9 @@ export class Generar3DService {
                         Nodo.hijos[0].clase.direccion=Nodo.clase.direccion;
                       //  Nodo.hijos[0].clase.Lfalse=Nodo.clase.Lfalse;
                         //Nodo.hijos[0].clase.tipo=Nodo.clase.tipo;
-                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                         let codigo0=Nodo.hijos[0].clase.codigo;
-                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                         let codigo2=Nodo.hijos[2].clase.codigo;
                         let direccion2=Nodo.hijos[2].clase.direccion;
 
@@ -1673,7 +1682,7 @@ export class Generar3DService {
                         let codigo9="ptr=ptr+"+tbs.tamanio+";\n";
                         this.TamanioAmbito(Nodo.hijos[4],tbsLocal);
                         /** */
-                        this.Recorre(Nodo.hijos[4],tbsLocal,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[4],tbsLocal,ptr,lt,lf,lr);
                         let codigo4=Nodo.hijos[4].clase.codigo;
                         /** */
                         let codigo10="ptr=ptr-"+tbs.tamanio+";\n";
@@ -1699,7 +1708,7 @@ export class Generar3DService {
                         let codigo4="ptr=ptr+"+tbs.tamanio+";\n";
                         this.TamanioAmbito(Nodo.hijos[2],tbsLocal);
                         /** */
-                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf);
+                        this.Recorre(Nodo.hijos[2],tbsLocal,ptr,lt,lf,lr);
                         /** */
                         let codigo5="ptr=ptr-"+tbs.tamanio+";\n";
                         ptr=ptr-tbs.tamanio;
@@ -1737,7 +1746,7 @@ export class Generar3DService {
                     break;
                   case "Param":
                         if(Nodo.hijos.length==3){
-                            this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                            this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                             let id=Nodo.hijos[0].valor;
                             let tipo=Nodo.hijos[2].valor;
                             let codigo="";
@@ -1772,8 +1781,8 @@ export class Generar3DService {
                             }
                         }else if(Nodo.hijos.length==5){
 
-                          this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                          this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                          this.Recorre(Nodo.hijos[4],tbs,ptr,lt,lf,lr);
                           let id=Nodo.hijos[2].valor;
                           let tipo=Nodo.hijos[4].valor;
                           let codigo="";
@@ -1811,25 +1820,25 @@ export class Generar3DService {
                     
                   case "Lparam":
                         if(Nodo.hijos.length==1){
-                            this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                            this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                             Nodo.valores=[];
                             Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
                             Nodo.valores.push(Nodo.hijos[0].clase.direccion);
                         }else if(Nodo.hijos.length==3){
                               Nodo.valores=[];
-                              this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                              this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                               let codigo1=Nodo.hijos[0].clase.codigo;
                               for(let item of Nodo.hijos[0].valores){
                                     Nodo.valores.push(item);
                               }
-                              this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                              this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                               Nodo.valores.push(Nodo.hijos[2].clase.direccion);
                               Nodo.clase.codigo=codigo1+Nodo.hijos[2].clase.codigo;  
                         }
                     break;  
                 case "AsignaFor":
                         if(Nodo.hijos.length==3){
-                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                           let codigo1=Nodo.hijos[2].clase.codigo;
                           let direccion1=Nodo.hijos[2].clase.direccion;
                           let codigo="";
@@ -1838,9 +1847,9 @@ export class Generar3DService {
 
                           Nodo.clase.codigo=codigo1+codigo;
                         }else if(Nodo.hijos.length==6){
-                          //this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
-                          this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf);
-                          this.Recorre(Nodo.hijos[5],tbs,ptr,lt,lf);
+                          //this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
+                          this.Recorre(Nodo.hijos[3],tbs,ptr,lt,lf,lr);
+                          this.Recorre(Nodo.hijos[5],tbs,ptr,lt,lf,lr);
                           let id=Nodo.hijos[1].valor.toLowerCase();
                           let tipo=Nodo.hijos[3].valor.toLowerCase();
                           let codigo="";
@@ -1880,10 +1889,10 @@ export class Generar3DService {
                   break;
                 case "insfor":
                         if(Nodo.hijos.length==1){
-                            this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf);
+                            this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                             Nodo.clase.codigo=Nodo.hijos[0].clase.codigo;
                         }else if(Nodo.hijos.length==3){
-                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf);
+                          this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                           let codigo1=Nodo.hijos[2].clase.codigo;
                           let direccion1=Nodo.hijos[2].clase.direccion;
                           let codigo="";
@@ -2162,22 +2171,24 @@ getCodigoNumero(tmpReturn,tmpIni):string{
   let Lm=this.nuevaLabel();
   let Ln=this.nuevaLabel();
   let Ls=this.nuevaLabel();
-  codigo+="if("+tmpIni+"<0) goto"+ Lm+";\n goto"+Ln+";\n";
+  let tmp=this.nuevoTemp();
+  codigo+=tmp+"="+tmpIni+";\n";
+  codigo+="if("+tmp+"<0) goto "+ Lm+";\n goto "+Ln+";\n";
   codigo+=Lm+":\n";
   let tr=this.nuevoTemp();
   codigo+=tr+"=-1;\n";
   let ts=this.nuevoTemp();
-  codigo+=ts+"="+tmpIni+"*"+tr+";\n";
-  codigo+=tmpIni+"="+ts+";\n";
+  codigo+=ts+"="+tmp+"*"+tr+";\n";
+  codigo+=tmp+"="+ts+";\n";
   codigo+=tmpReturn+"=h;\n"
   codigo+="heap[(int)h]=45;\n";
-  codigo+="h=h+1;\n goto"+Ls+";\n";
+  codigo+="h=h+1;\n goto "+Ls+";\n";
   codigo+=Ln+":\n";
   codigo+=tmpReturn+"=h;\n"
   codigo+=Ls+":\n";
-  codigo+=dato+"=(int)"+tmpIni+";\n";
+  codigo+=dato+"=(int)"+tmp+";\n";
   let dato1=this.nuevoTemp();
-  codigo+=dato1+"=fmod("+tmpIni+","+dato+")*1000;\n";
+  codigo+=dato1+"=fmod("+tmp+","+dato+")*1000;\n";
  // let t0=this.nuevoTemp();
   let t1=this.nuevoTemp();
   let t2=this.nuevoTemp();
@@ -2274,7 +2285,7 @@ getCodigoNumero(tmpReturn,tmpIni):string{
 
 declararSinExp(id,tipo,rol,tbs){
 
-    tbs.tabla.push({nombre:id,tipo:tipo,rol:rol,direccion:tbs.actual});
+    tbs.tabla.push({nombre:id,tipo:tipo,rol:rol,direccion:tbs.actual,ambito:"local"});
 }
 
 getNodofuncion(id){
@@ -2345,7 +2356,7 @@ RecogerFunciones(Nodo){
                 let tipo=Nodo.hijos[6].valor;
                 this.RecogerFunciones(Nodo.hijos[3]);
                 
-                this.tbGlobal.tabla.push({nombre:id,tipo:tipo,valor:"",rol:"funcion",parametros:Nodo.hijos[3].parametros,valores:null,nodo:Nodo,return:""});
+                this.tbGlobal.tabla.push({nombre:id,tipo:tipo,valor:"",rol:"funcion",ambito:"global",parametros:Nodo.hijos[3].parametros,valores:null,nodo:Nodo,return:"",direccion:0});
                 
 
               }else if(Nodo.hijos.length==7){
@@ -2353,7 +2364,7 @@ RecogerFunciones(Nodo){
                 this.RecogerFunciones(Nodo.hijos[5]);
                 let tipo=Nodo.hijos[5].valor;
                 let parametros=[];
-                this.tbGlobal.tabla.push({nombre:id,tipo:tipo,valor:"",rol:"funcion",parametros:parametros,valores:null,nodo:Nodo,return:""});
+                this.tbGlobal.tabla.push({nombre:id,tipo:tipo,valor:"",rol:"funcion",ambito:"global",parametros:parametros,valores:null,nodo:Nodo,return:"",direccion:0});
 
               }
               
