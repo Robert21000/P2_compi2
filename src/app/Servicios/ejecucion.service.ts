@@ -943,16 +943,18 @@ getFunciones(){
 
     getExpTipo(Exp,ciclo,tb):string{
        if(Exp.hijos.length==5){
-         let condicion:string=this.getExpTipo(Exp.hijos[0],ciclo,tb);
-         if(condicion.toLowerCase()=="boolean".toLowerCase()){
-             
-            return this.getExpTipo(Exp.hijos[2],ciclo,tb);
-         }else{
-            let error={tipo:"Error Semantico",valor:condicion,descripcion:"La condicion debe ser booleana",linea:Exp.hijos[1].linea,columna:5};
-            this.listaSemanticos.push(error);
-            return "number";
+         if(Exp.hijos[2].nombre=="Exp"){
+          let condicion:string=this.getExpTipo(Exp.hijos[0],ciclo,tb);
+          if(condicion.toLowerCase()=="boolean".toLowerCase()){
+              
+             return this.getExpTipo(Exp.hijos[2],ciclo,tb);
+          }else{
+             let error={tipo:"Error Semantico",valor:condicion,descripcion:"La condicion debe ser booleana",linea:Exp.hijos[1].linea,columna:5};
+             this.listaSemanticos.push(error);
+             return "number";
+          }
          }
-   
+         
        }else if(Exp.hijos.length==4){
            if(Exp.hijos[1].nombre=="pIzq"){
                 let id= Exp.hijos[0].valor;                
