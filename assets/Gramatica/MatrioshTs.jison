@@ -130,6 +130,10 @@ id					({letra})({letra}|{decimal})*
 'push'				return 'Rpush';
 'pop'				return 'Rpop';
 'length'			return 'Rlength';
+'charat'			return 'Rcharat';
+'tolowercase'		return 'Rtolowercase';
+'touppercase'		return 'Rtouppercase';
+'concat'			return 'Rconcat';
 'graficar_ts'		return 'Rgraficar';
 
 
@@ -163,7 +167,8 @@ id					({letra})({letra}|{decimal})*
 %left 'and'
 %left ternario
 %left 'difer' ,'dbigual'
-%left 'menor' ,'mayor' ,'menorq' ,'mayorq' 
+%left 'menor' ,'mayor' ,'menorq' ,'mayorq'
+%left 'punto' 
 
 %left 'mas', 'menos'
 %left 'por', 'div' ,'mod'
@@ -2571,14 +2576,13 @@ Exp:
 		idg++;
 		$$=Exp;		
 	}
-	|id punto Rlength
+	|Exp punto Rlength
 	{
 		var lista=[];
 		let n108=new Nodo();	
 		linea=this._$.first_line;
 		columna=this._$.first_column;
-		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1,linea:linea,columna:columna});
-		idg++;
+		lista.push($1);
 		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2,linea:linea,columna:columna});
 		idg++;
 		lista.push({nombre:"Rlength",tipo:"terminal",nodo:"nodo"+idg,valor:$3,linea:linea,columna:columna});
@@ -2587,6 +2591,104 @@ Exp:
 			nombre:"Exp",
 			tipo:"noterminal",
 			nodo:"nodo"+idg,clase:n108,	
+			hijos:lista
+		}
+		idg++;
+		$$=Exp;
+	}
+	|Exp punto Rcharat pIzq Exp pDer
+	{
+		var lista=[];
+		let n109=new Nodo();	
+		linea=this._$.first_line;
+		columna=this._$.first_column;
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"Rcharat",tipo:"terminal",nodo:"nodo"+idg,valor:$3,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4,linea:linea,columna:columna});
+		idg++;
+		lista.push($5);
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$6,linea:linea,columna:columna});
+		idg++;		
+		var Exp={
+			nombre:"Exp",
+			tipo:"noterminal",
+			nodo:"nodo"+idg,clase:n109,	
+			hijos:lista
+		}
+		idg++;
+		$$=Exp;
+	}
+	|Exp punto Rtolowercase pIzq pDer
+	{
+		var lista=[];
+		let n110=new Nodo();	
+		linea=this._$.first_line;
+		columna=this._$.first_column;
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"Rtolowercase",tipo:"terminal",nodo:"nodo"+idg,valor:$3,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$5,linea:linea,columna:columna});
+		idg++;		
+		var Exp={
+			nombre:"Exp",
+			tipo:"noterminal",
+			nodo:"nodo"+idg,clase:n110,	
+			hijos:lista
+		}
+		idg++;
+		$$=Exp;
+	}
+	|Exp punto Rtouppercase pIzq pDer
+	{
+		var lista=[];
+		let n111=new Nodo();	
+		linea=this._$.first_line;
+		columna=this._$.first_column;
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"Rtouppercase",tipo:"terminal",nodo:"nodo"+idg,valor:$3,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$5,linea:linea,columna:columna});
+		idg++;		
+		var Exp={
+			nombre:"Exp",
+			tipo:"noterminal",
+			nodo:"nodo"+idg,clase:n111,	
+			hijos:lista
+		}
+		idg++;
+		$$=Exp;
+	}
+	|Exp punto Rconcat pIzq Exp pDer
+	{
+		var lista=[];
+		let n112=new Nodo();	
+		linea=this._$.first_line;
+		columna=this._$.first_column;
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"Rconcat",tipo:"terminal",nodo:"nodo"+idg,valor:$3,linea:linea,columna:columna});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4,linea:linea,columna:columna});
+		idg++;
+		lista.push($5);
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$6,linea:linea,columna:columna});
+		idg++;		
+		var Exp={
+			nombre:"Exp",
+			tipo:"noterminal",
+			nodo:"nodo"+idg,clase:n112,	
 			hijos:lista
 		}
 		idg++;
