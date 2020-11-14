@@ -843,7 +843,7 @@ export class Generar3DService {
                   this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);
                   this.Recorre(Nodo.hijos[2],tbs,ptr,lt,lf,lr);
                   Nodo.clase.direccion=this.nuevoTemp();  
-                  Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo+Nodo.clase.direccion+"="+Nodo.hijos[0].clase.direccion+"/"+Nodo.hijos[2].clase.direccion+";\n";
+                  Nodo.clase.codigo=Nodo.hijos[0].clase.codigo+Nodo.hijos[2].clase.codigo+Nodo.clase.direccion+"=(double)"+Nodo.hijos[0].clase.direccion+"/"+Nodo.hijos[2].clase.direccion+";\n";
                   Nodo.clase.tipo="number";  
                 }else if(Nodo.hijos[1].nombre=="mod"){
                   this.Recorre(Nodo.hijos[0],tbs,ptr,lt,lf,lr);

@@ -718,11 +718,16 @@ LenguajeTraducito(Nodo,idFun:string,stack,bloqFun){
                 this.LenguajeTraducito(Nodo.hijos[1],idFun,stack,bloqFun);
 
             }else if(Nodo.hijos.length==3){              
-              if(Nodo.hijos[0].nombre=="Exp"){
+              if(Nodo.hijos[0].nombre=="Exp"&&Nodo.hijos[2].nombre=="Exp"){
 
                 this.LenguajeTraducito(Nodo.hijos[0],idFun,stack,bloqFun);
                 stack[stack.length-1]+=Nodo.hijos[1].valor;
                 this.LenguajeTraducito(Nodo.hijos[2],idFun,stack,bloqFun);  
+              }else if(Nodo.hijos[0].nombre=="Exp"&&Nodo.hijos[2].nombre=="Rlength"){
+                
+                this.LenguajeTraducito(Nodo.hijos[0],idFun,stack,bloqFun);
+                stack[stack.length-1]+=Nodo.hijos[1].valor;
+                stack[stack.length-1]+=Nodo.hijos[2].valor;
               }else if(Nodo.hijos[0].nombre=="id"){
                   if(Nodo.hijos[1].nombre=="pIzq"){
 
@@ -801,14 +806,27 @@ LenguajeTraducito(Nodo,idFun:string,stack,bloqFun){
               
 
             }else if(Nodo.hijos.length==5){
-                    if(Nodo.hijos[0].nombre=="Exp"){
+                    if(Nodo.hijos[0].nombre=="Exp"&&Nodo.hijos[2].nombre=="Exp"){
                       this.LenguajeTraducito(Nodo.hijos[0],idFun,stack,bloqFun);
                       stack[stack.length-1]+=Nodo.hijos[1].valor;
                       this.LenguajeTraducito(Nodo.hijos[2],idFun,stack,bloqFun);
                       stack[stack.length-1]+=Nodo.hijos[3].valor;
                       this.LenguajeTraducito(Nodo.hijos[4],idFun,stack,bloqFun);
+                    }else{
+                      this.LenguajeTraducito(Nodo.hijos[0],idFun,stack,bloqFun);
+                      stack[stack.length-1]+=Nodo.hijos[1].valor;
+                      stack[stack.length-1]+=Nodo.hijos[2].valor;
+                      stack[stack.length-1]+=Nodo.hijos[3].valor;
+                      stack[stack.length-1]+=Nodo.hijos[4].valor;
                     }
 
+            }else if(Nodo.hijos.length==6){
+              this.LenguajeTraducito(Nodo.hijos[0],idFun,stack,bloqFun);
+              stack[stack.length-1]+=Nodo.hijos[1].valor;
+              stack[stack.length-1]+=Nodo.hijos[2].valor;
+              stack[stack.length-1]+=Nodo.hijos[3].valor;
+              this.LenguajeTraducito(Nodo.hijos[4],idFun,stack,bloqFun);
+              stack[stack.length-1]+=Nodo.hijos[5].valor;
             }    
       break;
     

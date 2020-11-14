@@ -942,18 +942,63 @@ getFunciones(){
 
 
     getExpTipo(Exp,ciclo,tb):string{
-       if(Exp.hijos.length==5){
-         if(Exp.hijos[2].nombre=="Exp"){
-          let condicion:string=this.getExpTipo(Exp.hijos[0],ciclo,tb);
-          if(condicion.toLowerCase()=="boolean".toLowerCase()){
-              
-             return this.getExpTipo(Exp.hijos[2],ciclo,tb);
-          }else{
-             let error={tipo:"Error Semantico",valor:condicion,descripcion:"La condicion debe ser booleana",linea:Exp.hijos[1].linea,columna:5};
-             this.listaSemanticos.push(error);
-             return "number";
+      
+      if(Exp.hijos.length==6){
+          if(Exp.hijos[2].nombre=="Rcharat"){
+            let tipo1=this.getExpTipo(Exp.hijos[0],ciclo,tb);
+            let tipo2=this.getExpTipo(Exp.hijos[4],ciclo,tb);
+            if(tipo1.toLowerCase()=="string"){
+                if(tipo2.toLowerCase()=="number"){
+
+                }else{
+                    let error={tipo:"Error Semantico",valor:"charAt",descripcion:"el indice en charAt debe ser Tipo Number",linea:Exp.hijos[1].linea,columna:15};
+                    this.listaSemanticos.push(error);
+                }
+            }else{
+                let error={tipo:"Error Semantico",valor:"charAt",descripcion:"Chart At pertence solo a tipo String",linea:Exp.hijos[1].linea,columna:20};
+                this.listaSemanticos.push(error);
+            }
+            return "string";
+          }else if(Exp.hijos[2].nombre=="Rconcat"){
+
+            let tipo1=this.getExpTipo(Exp.hijos[0],ciclo,tb);
+            let tipo2=this.getExpTipo(Exp.hijos[4],ciclo,tb);
+            if(tipo1.toLowerCase()=="string"){
+                if(tipo2.toLowerCase()=="string"){
+
+                }else{
+                    let error={tipo:"Error Semantico",valor:"Concat",descripcion:"Concat es para String",linea:Exp.hijos[1].linea,columna:15};
+                    this.listaSemanticos.push(error);
+                }
+            }else{
+                let error={tipo:"Error Semantico",valor:"Concat",descripcion:"Concat pertence solo a tipo String",linea:Exp.hijos[1].linea,columna:20};
+                this.listaSemanticos.push(error);
+            }
+            return "string";
           }
+
+      }else if(Exp.hijos.length==5){
+         
+        if(Exp.hijos[2].nombre=="Rtolowercase"){
+            let tipo1=this.getExpTipo(Exp.hijos[0],ciclo,tb);
+            if(tipo1.toLowerCase()=="string"){
+
+            }else{
+                  let error={tipo:"Error Semantico",valor:"ToLowerCase",descripcion:"ToLowerCase pertence solo a tipo String",linea:Exp.hijos[1].linea,columna:20};
+                  this.listaSemanticos.push(error);
+            }
+          return "string"
+         }else if(Exp.hijos[2].nombre=="Rtouppercase"){
+          let tipo1=this.getExpTipo(Exp.hijos[0],ciclo,tb);
+            if(tipo1.toLowerCase()=="string"){
+
+            }else{
+                  let error={tipo:"Error Semantico",valor:"ToUpperCase",descripcion:"ToUpperCase pertence solo a tipo String",linea:Exp.hijos[1].linea,columna:20};
+                  this.listaSemanticos.push(error);
+            }
+            return "string"
          }
+         return "string"
          
        }else if(Exp.hijos.length==4){
            if(Exp.hijos[1].nombre=="pIzq"){

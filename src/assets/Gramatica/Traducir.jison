@@ -108,6 +108,10 @@ id					({letra})({letra}|{decimal})*
 'push'				return 'Rpush';
 'pop'				return 'Rpop';
 'length'			return 'Rlength';
+'charat'			return 'Rcharat';
+'tolowercase'		return 'Rtolowercase';
+'touppercase'		return 'Rtouppercase';
+'concat'			return 'Rconcat';
 'graficar_ts'		return 'Rgraficar';
 
 /* Espacios en blanco */
@@ -152,6 +156,7 @@ id					({letra})({letra}|{decimal})*
 %left ternario
 %left 'difer' ,'dbigual'
 %left 'menor' ,'mayor' ,'menorq' ,'mayorq' 
+%left 'punto'
 
 %left 'mas', 'menos'
 %left 'por', 'div' ,'mod'
@@ -2049,23 +2054,6 @@ Exp:
 		idg++;
 		$$=Exp;		
 	}					
-	|llIzq Par llDer
-	{
-		var lista=[];
-		lista.push({nombre:"llIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$1});
-		idg++;
-		lista.push($2);
-		lista.push({nombre:"llDer",tipo:"terminal",nodo:"nodo"+idg,valor:$3});
-		idg++;		
-		var Exp={
-			nombre:"Exp",
-			tipo:"noterminal",
-			nodo:"nodo"+idg,	
-			hijos:lista
-		}
-		idg++;
-		$$=Exp;		
-	}
 	|pIzq Exp pDer
 	{
 		var lista=[];
@@ -2083,15 +2071,13 @@ Exp:
 		idg++;
 		$$=Exp;		
 	}
-	|id cIzq Exp cDer
+	|Exp punto Rlength
 	{
 		var lista=[];
-		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1});
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
 		idg++;
-		lista.push({nombre:"cIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
-		idg++;
-		lista.push($3);
-		lista.push({nombre:"cDer",tipo:"terminal",nodo:"nodo"+idg,valor:$4});
+		lista.push({nombre:"Rlength",tipo:"terminal",nodo:"nodo"+idg,valor:$3});
 		idg++;		
 		var Exp={
 			nombre:"Exp",
@@ -2100,17 +2086,85 @@ Exp:
 			hijos:lista
 		}
 		idg++;
-		$$=Exp;		
+		$$=Exp;
 	}
-	|id punto Rlength
+	|Exp punto Rcharat pIzq Exp pDer
 	{
 		var lista=[];
-		lista.push({nombre:"id",tipo:"terminal",nodo:"nodo"+idg,valor:$1});
-		idg++;
+		lista.push($1);
 		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
 		idg++;
-		lista.push({nombre:"Rlength",tipo:"terminal",nodo:"nodo"+idg,valor:$3});
-		idg++;		
+		lista.push({nombre:"Rcharat",tipo:"terminal",nodo:"nodo"+idg,valor:$3});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4});
+		idg++;
+		lista.push($5);
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$6});
+		idg++;			
+		var Exp={
+			nombre:"Exp",
+			tipo:"noterminal",
+			nodo:"nodo"+idg,	
+			hijos:lista
+		}
+		idg++;
+		$$=Exp;
+	}
+	|Exp punto Rtolowercase pIzq pDer
+	{
+		var lista=[];
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
+		idg++;
+		lista.push({nombre:"Rtolowercase",tipo:"terminal",nodo:"nodo"+idg,valor:$3});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4});
+		idg++;
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$5});
+		idg++;			
+		var Exp={
+			nombre:"Exp",
+			tipo:"noterminal",
+			nodo:"nodo"+idg,	
+			hijos:lista
+		}
+		idg++;
+		$$=Exp;
+	}
+	|Exp punto Rtouppercase pIzq pDer
+	{
+		var lista=[];
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
+		idg++;
+		lista.push({nombre:"Rtouppercase",tipo:"terminal",nodo:"nodo"+idg,valor:$3});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4});
+		idg++;
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$5});
+		idg++;			
+		var Exp={
+			nombre:"Exp",
+			tipo:"noterminal",
+			nodo:"nodo"+idg,	
+			hijos:lista
+		}
+		idg++;
+		$$=Exp;
+	}
+	|Exp punto Rconcat pIzq Exp pDer
+		{
+		var lista=[];
+		lista.push($1);
+		lista.push({nombre:"punto",tipo:"terminal",nodo:"nodo"+idg,valor:$2});
+		idg++;
+		lista.push({nombre:"Rconcat",tipo:"terminal",nodo:"nodo"+idg,valor:$3});
+		idg++;
+		lista.push({nombre:"pIzq",tipo:"terminal",nodo:"nodo"+idg,valor:$4});
+		idg++;
+		lista.push($5);
+		lista.push({nombre:"pDer",tipo:"terminal",nodo:"nodo"+idg,valor:$6});
+		idg++;			
 		var Exp={
 			nombre:"Exp",
 			tipo:"noterminal",
